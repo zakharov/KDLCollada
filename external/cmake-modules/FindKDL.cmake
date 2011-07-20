@@ -6,7 +6,7 @@
 
 #INCLUDE (${PROJECT_SOURCE_DIR}/config/FindPkgConfig.cmake)
 
-IF ( PKG_CONFIG_EXECUTABLE )
+IF ( CMAKE_PKGCONFIG_EXECUTABLE )
 
     MESSAGE( STATUS "Detecting KDL" )
     
@@ -50,9 +50,9 @@ IF ( PKG_CONFIG_EXECUTABLE )
 	ENDIF ( KDLTK_FOUND )
       ENDIF ( KDL_FOUND )
 
-ELSE  ( PKG_CONFIG_EXECUTABLE )
+ELSE  ( CMAKE_PKGCONFIG_EXECUTABLE )
 
     # Can't find pkg-config -- have to search manually
     MESSAGE( FATAL_ERROR "Can't find KDL without pkgconfig !")
 
-ENDIF ( PKG_CONFIG_EXECUTABLE )
+ENDIF ( CMAKE_PKGCONFIG_EXECUTABLE )

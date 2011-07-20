@@ -22,7 +22,7 @@ INCLUDE_DIRECTORIES(${libKDLCollada_include_dirs})
 
 LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
-ADD_LIBRARY(tmcl ${libKDLCollada_FILES} ${libKDLCollada_EXTERNAL_FILES})
+ADD_LIBRARY(kdl-collada ${libKDLCollada_FILES} ${libKDLCollada_EXTERNAL_FILES})
 
-TARGET_LINK_LIBRARIES(kdl_collada ${libKDLCollada_libs}
+TARGET_LINK_LIBRARIES(kdl-collada ${libKDLCollada_libs}
 )
