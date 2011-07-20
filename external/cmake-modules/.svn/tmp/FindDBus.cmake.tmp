@@ -1,0 +1,79 @@
+#
+# Try to find DBus library and include path.
+# Once done this will define
+# DBUS_FOUND
+# DBUS_INCLUDE_PATH
+# DBUS_LIBRARY
+#
+
+IF (WIN32)
+        MESSAGE(FATAL_ERROR "Not implemented")
+ELSE (WIN32)
+
+    IF(ANDROID)
+    
+        FIND_PATH( DBUS_INCLUDE_PATH dbus/dbus.h
+		    #/opt/FriendlyARM/mini6410/android20110112/Android-2.2/external/dbus/
+		    ${ANDROID_ROOT}/external/dbus/
+		    ${ANDROID_ROOT}/external
+       )
+       
+        FIND_LIBRARY( DBUS_LIBRARIES dbus
+            #/opt/FriendlyARM/mini6410/android20110112/Android-2.2/rootfs_dir/system/lib/
+            ${ANDROID_ROOT_FS}/system/lib/
+            ${ANDROID_ROOT}/system/lib/
+       )
+       
+    ELSE(ANDROID)
+    
+        FIND_PATH( DBUS_INCLUDE_PATH dbus/dbus.h
+            /usr/local/include
+		    /usr/local/lib
+		    /usr/include
+		    /usr/lib
+            /sw/include
+            /opt/local/include
+            /opt/csw/include
+            /opt/include
+           PATH_SUFFIXES dbus-1.0 
+        )
+       
+       FIND_LIBRARY(DBUS_LIBRARIES dbus-1
+            /usr/lib64
+            /usr/lib
+            /usr/local/lib64
+            /usr/local/lib
+            /sw/lib
+            /opt/local/lib
+       )  
+       
+    ENDIF(ANDROID)
+    
+    MESSAGE(STATUS "INFO: DBUS_INCLUDE_PATH = ${DBUS_INCLUDE_PATH}")	
+
+	FIND_PATH( DBUS_INCLUDE_PATH_ARCH dbus/dbus-arch-deps.h
+		#/opt/FriendlyARM/mini6410/android20110112/Android-2.2/external/dbus/
+		${ANDROID_ROOT}/external/dbus/
+		/usr/local/lib/dbus-1.0/include/
+<<<<<<< .mine
+		/usr/lib/i386-linux-gnu/dbus-1.0/include
+		/usr/lib/dbus-1.0/include/
+               	
+       )
+=======
+		/usr/lib/dbus-1.0/include/              	
+    )
+>>>>>>> .r36
+
+       get_filename_component(_dbusLibPath ${DBUS_LIBRARIES} PATH)
+
+       SET( DBUS_INCLUDE_PATH ${DBUS_INCLUDE_PATH} ${_dbusLibPath}/dbus-1.0/include ${DBUS_INCLUDE_PATH_ARCH} )
+ENDIF (WIN32)
+
+IF ( DBUS_INCLUDE_PATH AND DBUS_LIBRARIES )
+        SET( DBUS_FOUND TRUE )
+ELSE ( DBUS_INCLUDE_PATH AND DBUS_LIBRARIES )
+        SET( DBUS_FOUND FALSE )
+ENDIF ( DBUS_INCLUDE_PATH AND DBUS_LIBRARIES )
+
+MARK_AS_ADVANCED( DBUS_FOUND DBUS_INCLUDE_PATH DBUS_LIBRARIES )

@@ -1,0 +1,46 @@
+#
+# Try to find DBus library and include path.
+# Once done this will define
+# LIBC_FOUND
+# LIBC_LIBRARIES
+#
+
+IF (WIN32)
+        MESSAGE(FATAL_ERROR "Not implemented")
+ELSE (WIN32)
+
+    IF(ANDROID)
+         
+        FIND_LIBRARY(LIBC_LIBRARIES c
+            PATHS
+            ${ANDROID_ROOT_FS}/system/lib/
+            ${ANDROID_ROOT}/system/lib/
+            NO_DEFAULT_PATH #don't check in ndk toolchain path...            
+       )
+       
+    ELSE(ANDROID)
+
+        # use pkg-config to get the directories and then use these values
+        # in the FIND_PATH() and FIND_LIBRARY() calls
+        find_package(PkgConfig)
+        pkg_check_modules(PC_LIBC QUIET c)
+        SET(BLUEZ_DEFINITIONS ${PC_BLUEZ_CFLAGS_OTHER})
+         
+        FIND_LIBRARY(LIBC_LIBRARIES c
+            ${PC_BLUEZ_LIBDIR}
+            ${PC_BLUEZ_LIBRARY_DIRS}
+       )  
+              
+    ENDIF(ANDROID)
+    
+    MESSAGE(STATUS "INFO: LIBC_LIBRARIES = ${LIBC_LIBRARIES}")	
+
+ENDIF (WIN32)
+
+IF ( LIBC_LIBRARIES )
+        SET( LIBC_FOUND TRUE )
+ELSE ( LIBC_LIBRARIES )
+        SET( LIBC_FOUND FALSE )
+ENDIF ( LIBC_LIBRARIES )
+
+MARK_AS_ADVANCED( LIBC_FOUND LIBC_LIBRARIES )

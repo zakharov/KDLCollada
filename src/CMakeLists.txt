@@ -1,0 +1,28 @@
+PROJECT(libKDLCollada)
+
+SET(libKDLCollada_include_dirs 
+	${CMAKE_HOME_DIRECTORY}/include
+#	${Boost_INCLUDE_DIR}
+#	${DBUS_INCLUDE_PATH}
+#	${BLUEZ_INCLUDE_DIR}
+#	${BoHarness_CORE_SRC}
+)
+
+SET(libKDLCollada_libs
+#	${Boost_LIBRARIES}
+#	${DBUS_LIBRARIES}
+#	${BLUEZ_LIBRARIES}
+)
+
+file(GLOB_RECURSE libKDLCollada_FILES 
+	${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/*.h)
+
+INCLUDE_DIRECTORIES(${libKDLCollada_include_dirs})
+
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
+
+ADD_LIBRARY(tmcl ${libKDLCollada_FILES} ${libKDLCollada_EXTERNAL_FILES})
+
+TARGET_LINK_LIBRARIES(tmcl ${libKDLCollada_libs}
+)

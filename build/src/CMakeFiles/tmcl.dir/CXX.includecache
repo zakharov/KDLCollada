@@ -1,0 +1,14 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/KDLCollada.h
+
+/home/alexey/workspace/KDLCollada/src/KDLCollada.cpp
+KDLCollada.h
+/home/alexey/workspace/KDLCollada/src/KDLCollada.h
+

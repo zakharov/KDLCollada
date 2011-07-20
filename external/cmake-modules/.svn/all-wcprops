@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/roadrunner/!svn/ver/36/bioharness/trunk/external/cmake-modules
+END
+FindBlueZ.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/roadrunner/!svn/ver/36/bioharness/trunk/external/cmake-modules/FindBlueZ.cmake
+END
+FindLibC.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/roadrunner/!svn/ver/36/bioharness/trunk/external/cmake-modules/FindLibC.cmake
+END
+FindDBus.cmake
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/roadrunner/!svn/ver/36/bioharness/trunk/external/cmake-modules/FindDBus.cmake
+END

@@ -1,0 +1,63 @@
+# - Try to find BlueZ
+# Once done this will define
+#
+#  BLUEZ_FOUND - system has BlueZ
+#  BLUEZ_INCLUDE_DIR - the BlueZ include directory
+#  BLUEZ_LIBRARIES - Link these to use BlueZ
+#  BLUEZ_DEFINITIONS - Compiler switches required for using BlueZ
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
+
+# Copyright (c) 2008, Daniel Gollub, <dgollub@suse.de>
+#
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+
+
+IF ( BLUEZ_INCLUDE_DIR AND BLUEZ_LIBRARIES )
+   # in cache already
+   SET(BlueZ_FIND_QUIETLY TRUE)
+ENDIF ( BLUEZ_INCLUDE_DIR AND BLUEZ_LIBRARIES )
+
+
+IF( NOT WIN32 )
+	IF (ANDROID)
+	    # nothing special here			
+	ELSE (ANDROID)
+
+        # use pkg-config to get the directories and then use these values
+        # in the FIND_PATH() and FIND_LIBRARY() calls
+        find_package(PkgConfig)
+        pkg_check_modules(PC_BLUEZ QUIET bluez)
+        SET(BLUEZ_DEFINITIONS ${PC_BLUEZ_CFLAGS_OTHER})
+        
+	ENDIF(ANDROID)
+ENDIF( NOT WIN32 )
+
+FIND_PATH(BLUEZ_INCLUDE_DIR bluetooth/bluetooth.h
+#  /opt/FriendlyARM/mini6410/android20110112/Android-2.2/external/bluetooth/bluez/include
+  PATHS
+  ${PC_BLUEZ_INCLUDEDIR}
+  ${PC_BLUEZ_INCLUDE_DIRS}
+  /usr/X11/include
+  ${ANDROID_ROOT}/external/bluetooth/bluez/include
+)
+
+MESSAGE(STATUS "INFO: BLUEZ_INCLUDE_DIR ${BLUEZ_INCLUDE_DIR}")
+
+FIND_LIBRARY(BLUEZ_LIBRARIES bluetooth
+  #/opt/FriendlyARM/mini6410/android20110112/Android-2.2/rootfs_dir/system/lib/
+  PATHS
+  ${PC_BLUEZ_LIBDIR}
+  ${PC_BLUEZ_LIBRARY_DIRS}
+  ${ANDROID_ROOT_FS}/system/lib/
+)
+
+INCLUDE(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(BlueZ DEFAULT_MSG BLUEZ_INCLUDE_DIR BLUEZ_LIBRARIES )
+
+# show the BLUEZ_INCLUDE_DIR and BLUEZ_LIBRARIES variables only in the advanced view
+MARK_AS_ADVANCED(BLUEZ_INCLUDE_DIR BLUEZ_LIBRARIES )
+
+
