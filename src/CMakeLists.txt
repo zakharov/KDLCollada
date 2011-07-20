@@ -24,5 +24,5 @@ LINK_DIRECTORIES(${LIBRARY_OUTPUT_PATH})
 
 ADD_LIBRARY(tmcl ${libKDLCollada_FILES} ${libKDLCollada_EXTERNAL_FILES})
 
-TARGET_LINK_LIBRARIES(tmcl ${libKDLCollada_libs}
+TARGET_LINK_LIBRARIES(kdl_collada ${libKDLCollada_libs}
 )

@@ -1,2 +1,0 @@
-/usr/bin/ar cr ../../lib/libtmcl.a  CMakeFiles/tmcl.dir/KDLCollada.cpp.o
-/usr/bin/ranlib ../../lib/libtmcl.a
