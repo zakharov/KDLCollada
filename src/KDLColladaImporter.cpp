@@ -1,11 +1,13 @@
 #include "KDLColladaImporter.h"
 #include "COLLADAFW.h"
+#include "COLLADABU.h"
 #include <iostream>
 
 #define DEBUG
 
 using namespace std;
 using namespace COLLADAFW;
+using namespace COLLADABU::Math;
 
 KDLColladaImporter::KDLColladaImporter()
 {
@@ -117,17 +119,82 @@ bool KDLColladaImporter::writeFormula( const COLLADAFW::Formula* formulas )
     return true;
 }
 
-void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr) {
-    const KinematicsModel::LinkJointConnections& linkJointConnArray = kinModelPtr->getLinkJointConnections();
+void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr)
+{
+    const KinematicsModelArray& kinModelArray = kinematicsScenePtr->getKinematicsModels();
+#ifdef DEBUG
+    cout << "Found " << kinModelArray.getCount() << " kinematics models." << endl;
+#endif
+    for (size_t i = 0; i < kinModelArray.getCount(); i++)
+    {
+        KinematicsModel* kinModelPtr = kinModelArray[i];
+        if (kinModelPtr != NULL)
+        {
+            parseLinkJointConnections(kinModelPtr);
+        }
+    }
+}
 
-    for (size_t i = 0; i < linkJointConnArray.getCount(); i++) {
+void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr)
+{
+    const KinematicsModel::LinkJointConnections& linkJointConnArray = kinModelPtr->getLinkJointConnections();
+    const JointPointerArray& jointArray = kinModelPtr->getJoints();
+
+    for (size_t i = 0; i < linkJointConnArray.getCount(); i++)
+    {
         KinematicsModel::LinkJointConnection* linkJointConnPtr = linkJointConnArray[i];
         size_t jointIndex = linkJointConnPtr->getJointIndex();
         size_t linkNumber = linkJointConnPtr->getLinkNumber();
         const TransformationPointerArray& transformArray = linkJointConnPtr->getTransformations();
-        #ifdef DEBUG
+        Joint* jointPtr = jointArray[jointIndex];
+#ifdef DEBUG
         cout << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber << endl;
-        #endif
+        cout << "joint name: " << jointPtr->getName() << endl;
+#endif
+        parseJointPrimitiveArray(jointPtr);
+
+    }
+}
+
+void KDLColladaImporter::parseJointPrimitiveArray(Joint* jointPtr)
+{
+    const JointPrimitivePointerArray& jointPrimitiveArray = jointPtr->getJointPrimitives();
+
+    for (size_t i = 0; i < jointPrimitiveArray.getCount(); i++)
+    {
+        JointPrimitive* jointPtr = jointPrimitiveArray[i];
+        Vector3& axis = jointPtr->getAxis();
+#ifdef DEBUG
+        cout << "Axis: " << fabs(axis[0]) << " " << fabs(axis[1]) << " " << fabs(axis[2]) << endl;
+        switch (jointPtr->getType())
+        {
+        case JointPrimitive::PRISMATIC:
+            cout << "Prismatic type" << endl;
+            break;
+        case JointPrimitive::REVOLUTE:
+            cout << "Revolute type" << endl;
+            break;
+        default:
+            cout << "Unknown type" << endl;
+        }
+    }
+#endif
+}
+
+void  KDLColladaImporter::parseNodeLinkBindArray(InstanceKinematicsScene* instKinScene)
+{
+    const InstanceKinematicsScene::NodeLinkBindingArray& nodeLinkBindArray = instKinScene->getNodeLinkBindings();
+
+    for (size_t i = 0; i < nodeLinkBindArray.getCount(); i++)
+    {
+        const InstanceKinematicsScene::NodeLinkBinding& nodeLinkBind = nodeLinkBindArray[i];
+        size_t modelId = nodeLinkBind.kinematicsModelId;
+        size_t linkNum = nodeLinkBind.linkNumber;
+        COLLADAFW::UniqueId nodeId = nodeLinkBind.nodeUniqueId;
+
+#ifdef DEBUG
+        cout << "node id = " << nodeId << " attached to model id = " << modelId << " link number = " << linkNum << endl;
+#endif
     }
 }
 
@@ -136,19 +203,14 @@ bool KDLColladaImporter::writeKinematicsScene( const COLLADAFW::KinematicsScene*
     cout << "Kinematics scene found, let's parse it!" << endl;
     const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
 
-    const KinematicsModelArray& kinModelArray = kinematicsScene->getKinematicsModels();
-#ifdef DEBUG
-        cout << "Found " << kinModelArray.getCount() << " kinematics models." << endl;
-#endif
-    for (size_t i = 0; i < kinModelArray.getCount(); i++) {
-        KinematicsModel* kinModelPtr = kinModelArray[i];
-        if (kinModelPtr != NULL) {
-            parseLinkJointConnections(kinModelPtr);
-//            kinModelPtr.getLinkJointConnections();
-
-        }
-
+    for (int i = 0; i < instanceKinSceneArray.getCount(); i++)
+    {
+        InstanceKinematicsScene* instanceKinScenePtr = instanceKinSceneArray[i];
+        cout << instanceKinScenePtr->getName() << endl;
+        parseNodeLinkBindArray(instanceKinScenePtr);
     }
+
+    parseKinematicsModel(kinematicsScene);
 
 
     return true;

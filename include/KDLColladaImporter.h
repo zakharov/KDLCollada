@@ -14,14 +14,20 @@ namespace COLLADAFW
 {
 class Formulas;
 class Formula;
+class KinematicsScene;
 class KinematicsModel;
+class InstanceKinematicsScene;
+class Joint;
 }
 
 class KDLColladaImporter : public COLLADAFW::IWriter
 {
     // member declarations
 private:
+    void parseKinematicsModel(const COLLADAFW::KinematicsScene* kinematicsScenePtr);
     void parseLinkJointConnections(COLLADAFW::KinematicsModel* kinModelPtr);
+    void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr);
+    void parseNodeLinkBindArray(COLLADAFW::InstanceKinematicsScene* instKinScene);
     // public function declarations
 public:
     KDLColladaImporter();
