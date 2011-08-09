@@ -9,6 +9,7 @@
 #define	KDLCOLLADAIMPORTER_H
 
 #include "COLLADAFWIWriter.h"
+#include <vector>
 
 namespace COLLADAFW
 {
@@ -20,11 +21,16 @@ class InstanceKinematicsScene;
 class Joint;
 }
 
+namespace KDL
+{
+class Chain;
+}
+
 class KDLColladaImporter : public COLLADAFW::IWriter
 {
     // member declarations
 private:
-    void parseKinematicsModel(const COLLADAFW::KinematicsScene* kinematicsScenePtr);
+    void parseKinematicsModel(const COLLADAFW::KinematicsScene* kinematicsScenePtr, std::vector<KDL::Chain>& kdlChainArray);
     void parseLinkJointConnections(COLLADAFW::KinematicsModel* kinModelPtr);
     void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr);
     void parseNodeLinkBindArray(COLLADAFW::InstanceKinematicsScene* instKinScene);

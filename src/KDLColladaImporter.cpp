@@ -1,9 +1,13 @@
 #include "KDLColladaImporter.h"
+#include "COLLADAKinModelSerialChainIterator.h"
 #include "COLLADAFW.h"
 #include "COLLADABU.h"
 #include <iostream>
 
-#define DEBUG
+#include <kdl/chain.hpp>
+
+
+//#define DEBUG
 
 using namespace std;
 using namespace COLLADAFW;
@@ -119,7 +123,51 @@ bool KDLColladaImporter::writeFormula( const COLLADAFW::Formula* formulas )
     return true;
 }
 
-void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr)
+
+//TODO create KinematicsModel iterator
+//
+
+//void createSerialKinematicsModelIterator(KinematicsModel* kinModelPtr) {    // Serail chain iterator of the COLLADA 1.5 <kinematics model> tag
+//
+//}
+
+
+
+/*
+example of parallel kinematics repr.
+
+                      j4 l4
+l0 j1 l1 j2 l2 j3  l3
+                      0 --
+--  0 -- 0 --  0  --
+                      0 --
+                      j5 l5
+
+Structure matrix
+
+   l0 l1 l2 l3 l4 l5
+l0 0  0  0  0  0  0
+l1 j1 0  0  0  0  0
+l2  0 j2 0  0  0  0
+l3  0 0  j3 0  0  0
+l4  0 0  0  j4 0  0
+l5  0 0  0  j5 0  0
+
+
+Transformation matrix
+
+   j0 j1 l2 j3 j4 j5
+l0 0  0  0  0  0  0
+l1 t1 0  0  0  0  0
+l2  0 t2 0  0  0  0
+l3  0 0  t3 0  0  0
+l4  0 0  0  t4 0  0
+l5  0 0  0  0  0  0
+
+*/
+
+
+void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr, vector <KDL::Chain>& kdlChainArray)
 {
     const KinematicsModelArray& kinModelArray = kinematicsScenePtr->getKinematicsModels();
 #ifdef DEBUG
@@ -128,12 +176,41 @@ void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsS
     for (size_t i = 0; i < kinModelArray.getCount(); i++)
     {
         KinematicsModel* kinModelPtr = kinModelArray[i];
+        KDL::Chain kdlChain;
         if (kinModelPtr != NULL)
         {
             parseLinkJointConnections(kinModelPtr);
+            kdlChainArray.push_back(kdlChain);
         }
+
+        COLLADAKinModelSerialChainIterator itr(kinModelPtr);
+        do
+        {
+            Joint* joint = itr.getJoint();
+            TransformationPointerArray* transform = itr.getTransformationArray();
+            if (joint)
+            {
+                cout << "Joint " << joint->getName() << endl;
+
+            }
+            if (transform)
+            {
+                Transformation* tr = (*transform)[0];
+                cout << tr->getTransformationType() << endl;
+            }
+
+
+        }
+        while(itr.next() != NULL);
+
     }
+
+
+
+
 }
+
+
 
 void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr)
 {
@@ -150,6 +227,7 @@ void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr)
 #ifdef DEBUG
         cout << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber << endl;
         cout << "joint name: " << jointPtr->getName() << endl;
+        cout << "number of transforms: " << transformArray.getCount() << endl;
 #endif
         parseJointPrimitiveArray(jointPtr);
 
@@ -177,8 +255,10 @@ void KDLColladaImporter::parseJointPrimitiveArray(Joint* jointPtr)
         default:
             cout << "Unknown type" << endl;
         }
-    }
+
 #endif
+    }
+
 }
 
 void  KDLColladaImporter::parseNodeLinkBindArray(InstanceKinematicsScene* instKinScene)
@@ -203,14 +283,17 @@ bool KDLColladaImporter::writeKinematicsScene( const COLLADAFW::KinematicsScene*
     cout << "Kinematics scene found, let's parse it!" << endl;
     const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
 
+#ifdef DEBUG
     for (int i = 0; i < instanceKinSceneArray.getCount(); i++)
     {
         InstanceKinematicsScene* instanceKinScenePtr = instanceKinSceneArray[i];
         cout << instanceKinScenePtr->getName() << endl;
         parseNodeLinkBindArray(instanceKinScenePtr);
     }
+#endif
 
-    parseKinematicsModel(kinematicsScene);
+    vector<KDL::Chain> chain;
+    parseKinematicsModel(kinematicsScene, chain);
 
 
     return true;

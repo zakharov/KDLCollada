@@ -315,6 +315,7 @@
 					<attachment_full joint="kinmodel.0/joint_1">
 						<translate>0 0 30000</translate>
 						<link sid="Product2.1" name="Product2.1">
+						
 							<attachment_full joint="kinmodel.0/joint_0">
 								<translate>0 0 25000</translate>
 								<link sid="Product3.1" name="Product3.1"/>
