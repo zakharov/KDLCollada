@@ -30,7 +30,7 @@ KDLCollada::~KDLCollada()
 
 bool KDLCollada::load(const string& filename, std::vector<Chain>& kdlChain)
 {
-    KDLColladaImporter importer;
+    KDLColladaImporter importer(kdlChain);
  	COLLADASaxFWL::Loader loader;
 	COLLADAFW::Root root(&loader, &importer);
 

@@ -10,6 +10,8 @@
 
 #include "COLLADAFWIWriter.h"
 #include <vector>
+#include <kdl/chain.hpp>
+#include "COLLADAFW.h"
 
 namespace COLLADAFW
 {
@@ -24,6 +26,7 @@ class Joint;
 namespace KDL
 {
 class Chain;
+class Frame;
 }
 
 class KDLColladaImporter : public COLLADAFW::IWriter
@@ -32,11 +35,14 @@ class KDLColladaImporter : public COLLADAFW::IWriter
 private:
     void parseKinematicsModel(const COLLADAFW::KinematicsScene* kinematicsScenePtr, std::vector<KDL::Chain>& kdlChainArray);
     void parseLinkJointConnections(COLLADAFW::KinematicsModel* kinModelPtr);
-    void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr);
+//    void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr);
+    void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis);
     void parseNodeLinkBindArray(COLLADAFW::InstanceKinematicsScene* instKinScene);
+    void parseTransformationArray(COLLADAFW::TransformationPointerArray* transformationArray, KDL::Frame& frame);
     // public function declarations
 public:
     KDLColladaImporter();
+    KDLColladaImporter(std::vector<KDL::Chain>& kdlChain);
     virtual ~KDLColladaImporter();
 
     /** This method will be called if an error in the loading process occurred and the loader cannot
@@ -126,6 +132,8 @@ private:
     KDLColladaImporter( const KDLColladaImporter& pre );
     /** Disable default assignment operator. */
     const KDLColladaImporter& operator= ( const KDLColladaImporter& pre );
+
+    std::vector<KDL::Chain>& kdlChain;
 
 };
 

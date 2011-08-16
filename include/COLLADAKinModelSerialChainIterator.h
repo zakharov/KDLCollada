@@ -2,6 +2,7 @@
 #define COLLADAKINMODELSERIALCHAINITERATOR_H
 
 #include <vector>
+#include <kdl/chain.hpp>
 #include "COLLADAFW.h"
 
 class COLLADAKinModelSerialChainIterator
@@ -32,13 +33,9 @@ private:
     unsigned int getLinkNumber(const COLLADAFW::KinematicsModel::LinkJointConnections& linkJointConnArray);
 
     template <class T>
-    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<COLLADAFW::TransformationPointerArray*> >& matrix);
-
-
-    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<COLLADAFW::TransformationPointerArray*> >& matrix);
-    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<unsigned int> >& matrix);
-
+    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix);
     void parseLinkJointConnections(unsigned int jointIndex, std::vector<KinematicsPair>& kinPairArray); //Here we assume that each joint has only 2 adjacent links
+    void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis);
 
     void buildTransformation();
     void buildKinMatrix();

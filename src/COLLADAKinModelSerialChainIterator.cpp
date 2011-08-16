@@ -1,8 +1,12 @@
 #include "COLLADAKinModelSerialChainIterator.h"
+#include "COLLADABU.h"
+#include "Logger.h"
 #include <cmath>
 
 using namespace COLLADAFW;
+using namespace COLLADABU::Math;
 using namespace std;
+using namespace BRICS_MM;
 
 COLLADAKinModelSerialChainIterator::~COLLADAKinModelSerialChainIterator()
 {
@@ -78,16 +82,8 @@ unsigned int COLLADAKinModelSerialChainIterator::getLinkNumber(const KinematicsM
     return  link;
 }
 
-void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<TransformationPointerArray*> >& matrix)
-{
-    matrix.resize(width);
-    for (unsigned int i = 0; i < width; i++)
-    {
-        matrix[i].resize(height);
-    }
-}
-
-void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<unsigned int> >& matrix)
+template <class T>
+void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix)
 {
     matrix.resize(width);
     for (unsigned int i = 0; i < width; i++)
@@ -113,8 +109,6 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
                 unsigned int jIndex = linkJointConnPtr->getLinkNumber();
                 kinPair.parentLink = jIndex;
                 isParentLink = false;
-
-
             }
             else
             {
@@ -145,8 +139,39 @@ void COLLADAKinModelSerialChainIterator::buildTransformation()
         {
             transformMatrix[jointIndex][linkIndex] = &transformArray;
         }
+    }
+}
+
+void COLLADAKinModelSerialChainIterator::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis)
+{
+    const JointPrimitivePointerArray& jointPrimitiveArray = jointPtr->getJointPrimitives();
+
+    if (jointPrimitiveArray.getCount() > 1)
+        LOG(ERROR) << "found more than one joint primitive";
+
+    for (size_t i = 0; i < jointPrimitiveArray.getCount(); i++)
+    {
+        JointPrimitive* jointPtr = jointPrimitiveArray[i];
+
+        Vector3& axis = jointPtr->getAxis();
+        jointAxis.x( fabs(axis[0]));
+        jointAxis.y( fabs(axis[1]));
+        jointAxis.z( fabs(axis[2]));
+
+        switch (jointPtr->getType())
+        {
+        case JointPrimitive::PRISMATIC:
+            jointType = KDL::Joint::TransAxis;
+            break;
+        case JointPrimitive::REVOLUTE:
+            jointType = KDL::Joint::RotAxis;
+            break;
+        default:
+            LOG(ERROR) << "unknown joint type";
+        }
 
     }
+
 }
 
 void COLLADAKinModelSerialChainIterator::buildKinMatrix()
@@ -170,7 +195,8 @@ void COLLADAKinModelSerialChainIterator::buildKinMatrix()
             const TransformationPointerArray& transformArray = linkJointConnPtr->getTransformations();
             Joint* jointPtr = jointArray[jointIndex];
         #ifdef DEBUG
-            cout << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber << endl;
+
+             << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber << endl;
             cout << "joint name: " << jointPtr->getName() << endl;
         #endif
             parseJointPrimitiveArray(jointPtr);

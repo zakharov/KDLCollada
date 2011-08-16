@@ -2,8 +2,9 @@
 #include "COLLADAKinModelSerialChainIterator.h"
 #include "COLLADAFW.h"
 #include "COLLADABU.h"
-#include <iostream>
+#include "Logger.h"
 
+#include <iostream>
 #include <kdl/chain.hpp>
 
 
@@ -12,13 +13,10 @@
 using namespace std;
 using namespace COLLADAFW;
 using namespace COLLADABU::Math;
+using namespace BRICS_MM;
 
-KDLColladaImporter::KDLColladaImporter()
-{
 
-}
-
-KDLColladaImporter::KDLColladaImporter(const KDLColladaImporter& orig)
+KDLColladaImporter::KDLColladaImporter(std::vector<KDL::Chain>& kdlChain) : kdlChain(kdlChain)
 {
 
 }
@@ -165,14 +163,55 @@ l4  0 0  0  t4 0  0
 l5  0 0  0  0  0  0
 
 */
+void KDLColladaImporter::parseTransformationArray(TransformationPointerArray* transformationArray, KDL::Frame& frame)
+{
 
+    frame = KDL::Frame::Identity();
+    for (unsigned int i = 0; i < transformationArray->getCount(); i++)
+    {
+        Transformation* transform = (*transformationArray)[i];
+        /*
+        Types of tf tags in collada
+                    MATRIX,
+        			TRANSLATE,
+        			ROTATE,
+        			SCALE,
+        			LOOKAT,
+        			SKEW
+        */
+
+        switch (transform->getTransformationType())
+        {
+            case COLLADAFW::Transformation::TRANSLATE:
+            {
+                Vector3 t = dynamic_cast<COLLADAFW::Translate*> (transform)->getTranslation();
+                KDL::Vector trans(t.x, t.y, t.z);
+                KDL::Frame translation(trans);
+                frame = frame * translation;
+                break;
+            }
+
+            case COLLADAFW::Transformation::ROTATE:
+            {
+                Vector3 t = dynamic_cast<COLLADAFW::Rotate*> (transform)->getRotationAxis();
+                double angle = static_cast<COLLADAFW::Rotate*> (transform)->getRotationAngle();
+                KDL::Rotation rot(KDL::Rotation::Rot(KDL::Vector(t.x,
+                                                                 t.y,
+                                                                 t.z), angle  * COLLADABU::Math::PI / 180.0));
+
+                KDL::Frame rotation(rot);
+                frame = frame * rotation;
+                break;
+            }
+        }
+    }
+}
 
 void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr, vector <KDL::Chain>& kdlChainArray)
 {
     const KinematicsModelArray& kinModelArray = kinematicsScenePtr->getKinematicsModels();
-#ifdef DEBUG
-    cout << "Found " << kinModelArray.getCount() << " kinematics models." << endl;
-#endif
+    LOG(INFO) << "Found " << kinModelArray.getCount() << " kinematics models." << endl;
+
     for (size_t i = 0; i < kinModelArray.getCount(); i++)
     {
         KinematicsModel* kinModelPtr = kinModelArray[i];
@@ -184,33 +223,44 @@ void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsS
         }
 
         COLLADAKinModelSerialChainIterator itr(kinModelPtr);
+        unsigned int segmentNumber = 0;
         do
         {
             Joint* joint = itr.getJoint();
+
             TransformationPointerArray* transform = itr.getTransformationArray();
             if (joint)
             {
-                cout << "Joint " << joint->getName() << endl;
+                KDL::Joint::JointType jointType;
+                KDL::Vector jointAxis;
 
-            }
-            if (transform)
-            {
-                Transformation* tr = (*transform)[0];
-                cout << tr->getTransformationType() << endl;
-            }
+                string jointName = joint->getName();
+                parseJointPrimitiveArray(joint, jointType, jointAxis);
 
+                KDL::Joint jointKDL(jointName, KDL::Vector(), jointAxis, jointType);
+
+                char buffer[50] = {0};
+                sprintf (buffer, "%d\0",segmentNumber);
+
+                KDL::Frame frame;
+                if (transform)
+                {
+
+                    Transformation* tr = (*transform)[0];
+                    parseTransformationArray(transform, frame);
+                }
+
+                KDL::Segment segmentKDL(buffer, jointKDL, frame);
+                kdlChain.addSegment(segmentKDL);
+                ++segmentNumber;
+            }
 
         }
         while(itr.next() != NULL);
 
+        kdlChainArray.push_back(kdlChain);
     }
-
-
-
-
 }
-
-
 
 void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr)
 {
@@ -224,39 +274,43 @@ void KDLColladaImporter::parseLinkJointConnections(KinematicsModel* kinModelPtr)
         size_t linkNumber = linkJointConnPtr->getLinkNumber();
         const TransformationPointerArray& transformArray = linkJointConnPtr->getTransformations();
         Joint* jointPtr = jointArray[jointIndex];
-#ifdef DEBUG
-        cout << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber << endl;
-        cout << "joint name: " << jointPtr->getName() << endl;
-        cout << "number of transforms: " << transformArray.getCount() << endl;
-#endif
-        parseJointPrimitiveArray(jointPtr);
+
+        LOG(DEBUG) << "joint index = " << jointIndex << " connected to " << " link number = " << linkNumber;
+        LOG(DEBUG) << "joint name: " << jointPtr->getName();
+        LOG(DEBUG) << "number of transforms: " << transformArray.getCount();
+
+//        parseJointPrimitiveArray(jointPtr);
 
     }
 }
 
-void KDLColladaImporter::parseJointPrimitiveArray(Joint* jointPtr)
+void KDLColladaImporter::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis)
 {
     const JointPrimitivePointerArray& jointPrimitiveArray = jointPtr->getJointPrimitives();
+
+    if (jointPrimitiveArray.getCount() > 1)
+        LOG(INFO) << "found more than one joint primitive";
 
     for (size_t i = 0; i < jointPrimitiveArray.getCount(); i++)
     {
         JointPrimitive* jointPtr = jointPrimitiveArray[i];
         Vector3& axis = jointPtr->getAxis();
-#ifdef DEBUG
-        cout << "Axis: " << fabs(axis[0]) << " " << fabs(axis[1]) << " " << fabs(axis[2]) << endl;
+        jointAxis.x( fabs(axis[0]));
+        jointAxis.y( fabs(axis[1]));
+        jointAxis.z( fabs(axis[2]));
+
         switch (jointPtr->getType())
         {
         case JointPrimitive::PRISMATIC:
-            cout << "Prismatic type" << endl;
+            jointType = KDL::Joint::TransAxis;
             break;
         case JointPrimitive::REVOLUTE:
-            cout << "Revolute type" << endl;
+            jointType = KDL::Joint::RotAxis;
             break;
         default:
-            cout << "Unknown type" << endl;
+            LOG(INFO) << "unknown joint type" << endl;
         }
 
-#endif
     }
 
 }
@@ -272,28 +326,27 @@ void  KDLColladaImporter::parseNodeLinkBindArray(InstanceKinematicsScene* instKi
         size_t linkNum = nodeLinkBind.linkNumber;
         COLLADAFW::UniqueId nodeId = nodeLinkBind.nodeUniqueId;
 
-#ifdef DEBUG
-        cout << "node id = " << nodeId << " attached to model id = " << modelId << " link number = " << linkNum << endl;
-#endif
+        LOG(DEBUG) << "node id = " << nodeId << " attached to model id = " << modelId << " link number = " << linkNum;
+
     }
 }
 
 bool KDLColladaImporter::writeKinematicsScene( const COLLADAFW::KinematicsScene* kinematicsScene )
 {
-    cout << "Kinematics scene found, let's parse it!" << endl;
+    LOG(INFO) << "kinematics scene found, let's parse it!" << endl;
     const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
 
 #ifdef DEBUG
     for (int i = 0; i < instanceKinSceneArray.getCount(); i++)
     {
         InstanceKinematicsScene* instanceKinScenePtr = instanceKinSceneArray[i];
-        cout << instanceKinScenePtr->getName() << endl;
+        LOG(DEBUG) << instanceKinScenePtr->getName();
         parseNodeLinkBindArray(instanceKinScenePtr);
     }
 #endif
 
-    vector<KDL::Chain> chain;
-    parseKinematicsModel(kinematicsScene, chain);
+
+    parseKinematicsModel(kinematicsScene, kdlChain);
 
 
     return true;
