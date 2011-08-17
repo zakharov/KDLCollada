@@ -16,7 +16,7 @@ int main()
     const string filename =  "simple.dae";  // loading collada kinematics model and converting it to kdl serial chain
     if (!kdlCollada.load(COLLADA_MODELS_PATH + filename, kinematicsModels))
     {
-        cout << "Failed to import " << filename << endl;
+        cout << "Failed to import " << filename;
         return 0;
     }
 

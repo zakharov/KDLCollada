@@ -54,13 +54,14 @@ Joint* COLLADAKinModelSerialChainIterator::getJoint()  // get current element
 
 TransformationPointerArray* COLLADAKinModelSerialChainIterator::getTransformationArray()
 {
-    return transformMatrix[current][kinMatrix[current][current+1]];
+    LOG (DEBUG) << "transformMatrix " << current << " " << kinMatrix[current][current+1];
+    return transformMatrix[kinMatrix[current][current+1]][current];
 
 }
 
 unsigned int COLLADAKinModelSerialChainIterator::getMaxJointIndex(const KinematicsModel::LinkJointConnections& linkJointConnArray)
 {
-    unsigned int joint;
+    unsigned int joint = 0;
     for (unsigned int i = 0; i < linkJointConnArray.getCount(); i++)
     {
         KinematicsModel::LinkJointConnection* linkJointConnPtr = linkJointConnArray[i];
@@ -72,7 +73,7 @@ unsigned int COLLADAKinModelSerialChainIterator::getMaxJointIndex(const Kinemati
 
 unsigned int COLLADAKinModelSerialChainIterator::getLinkNumber(const KinematicsModel::LinkJointConnections& linkJointConnArray)
 {
-    unsigned int link;
+    unsigned int link = 0;
     for (unsigned int i = 0; i < linkJointConnArray.getCount(); i++)
     {
         KinematicsModel::LinkJointConnection* linkJointConnPtr = linkJointConnArray[i];
@@ -92,7 +93,7 @@ void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned
     }
 }
 
-void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int jointIndex, vector<KinematicsPair>& kinPairArray) //Here we assume that each joint has only 2 adjacent links
+void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int jointIndex) //Here we assume that each joint has only 2 adjacent links
 {
     const KinematicsModel::LinkJointConnections& linkJointConnArray = kinModelPtr->getLinkJointConnections();
     const JointPointerArray& jointArray = kinModelPtr->getJoints();
@@ -106,21 +107,18 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
         {
             if (isParentLink)
             {
-                unsigned int jIndex = linkJointConnPtr->getLinkNumber();
-                kinPair.parentLink = jIndex;
+                unsigned int linkNumber = linkJointConnPtr->getLinkNumber();
+                kinPair.parentLink = linkNumber;
                 isParentLink = false;
             }
             else
             {
-                unsigned int jIndex = linkJointConnPtr->getLinkNumber();
-                kinPair.childLink = jIndex;
+                unsigned int linkNumber = linkJointConnPtr->getLinkNumber();
+                kinPair.childLink = linkNumber;
                 isParentLink = true;
-                kinPairArray.push_back(kinPair);
                 kinMatrix[kinPair.parentLink][kinPair.childLink] = jointIndex;
-
             }
         }
-
     }
 }
 
@@ -181,11 +179,12 @@ void COLLADAKinModelSerialChainIterator::buildKinMatrix()
 
     initMatrix(linkNumber, linkNumber, kinMatrix);
     initMatrix(maxJointIndex+1, linkNumber, transformMatrix);
+
     buildTransformation();
     for (unsigned int i = 0; i <= maxJointIndex; i++)
     {
-        vector<KinematicsPair> kinPairArray;
-        parseLinkJointConnections(i, kinPairArray);
+      //  vector<KinematicsPair> kinPairArray;
+        parseLinkJointConnections(i);
 
         /*    vector<unsigned int> links;
             getConnectedLinks(i, kinModelPtr->getLinkJointConnections(), links);

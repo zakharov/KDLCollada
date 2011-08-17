@@ -34,7 +34,7 @@ private:
 
     template <class T>
     void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix);
-    void parseLinkJointConnections(unsigned int jointIndex, std::vector<KinematicsPair>& kinPairArray); //Here we assume that each joint has only 2 adjacent links
+    void parseLinkJointConnections(unsigned int jointIndex);
     void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis);
 
     void buildTransformation();

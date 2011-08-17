@@ -18,7 +18,8 @@ using namespace BRICS_MM;
 
 KDLColladaImporter::KDLColladaImporter(std::vector<KDL::Chain>& kdlChain) : kdlChain(kdlChain)
 {
-
+    Logger::setMinLoglevel(Logger::LOGDEBUG);
+	Logger::setLogfile("road_runner.log");
 }
 
 KDLColladaImporter::~KDLColladaImporter()
@@ -210,7 +211,7 @@ void KDLColladaImporter::parseTransformationArray(TransformationPointerArray* tr
 void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr, vector <KDL::Chain>& kdlChainArray)
 {
     const KinematicsModelArray& kinModelArray = kinematicsScenePtr->getKinematicsModels();
-    LOG(INFO) << "Found " << kinModelArray.getCount() << " kinematics models." << endl;
+    LOG(INFO) << "Found " << kinModelArray.getCount() << " kinematics models.";
 
     for (size_t i = 0; i < kinModelArray.getCount(); i++)
     {
@@ -246,7 +247,7 @@ void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsS
                 if (transform)
                 {
 
-                    Transformation* tr = (*transform)[0];
+                    //Transformation* tr = (*transform)[0];
                     parseTransformationArray(transform, frame);
                 }
 
@@ -308,7 +309,7 @@ void KDLColladaImporter::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KD
             jointType = KDL::Joint::RotAxis;
             break;
         default:
-            LOG(INFO) << "unknown joint type" << endl;
+            LOG(INFO) << "unknown joint type";
         }
 
     }
@@ -333,7 +334,7 @@ void  KDLColladaImporter::parseNodeLinkBindArray(InstanceKinematicsScene* instKi
 
 bool KDLColladaImporter::writeKinematicsScene( const COLLADAFW::KinematicsScene* kinematicsScene )
 {
-    LOG(INFO) << "kinematics scene found, let's parse it!" << endl;
+    LOG(INFO) << "kinematics scene found, let's parse it!";
     const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
 
 #ifdef DEBUG
