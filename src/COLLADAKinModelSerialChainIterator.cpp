@@ -22,6 +22,9 @@ COLLADAKinModelSerialChainIterator::COLLADAKinModelSerialChainIterator(Kinematic
 
 bool COLLADAKinModelSerialChainIterator::next() // move cursor and get next element
 {
+    if (size() == 0)
+        return false;
+
     if (current < size()-1)
     {
         current++;
@@ -44,18 +47,31 @@ void COLLADAKinModelSerialChainIterator::reset()    // reset iterator, move curs
 
 unsigned int COLLADAKinModelSerialChainIterator::size() // return a number of elemnts
 {
-    return kinMatrix.size();
+    unsigned int matrixSize = 0;
+    for (unsigned int i = 0; i < kinMatrix.size(); i++)
+    {
+       // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] << " "  <<  endl;
+       // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] <<  endl;
+
+        if (kinMatrix[i][i+1] == NULL)
+            return matrixSize;
+
+        matrixSize++;
+    }
+    cout << endl;
+    cout << endl;
+    return matrixSize;
 }
 
 Joint* COLLADAKinModelSerialChainIterator::getJoint()  // get current element
 {
-    return kinModelPtr->getJoints()[kinMatrix[current][current+1]];
+    return kinModelPtr->getJoints()[kinMatrix[current][current+1]-1];
 }
 
 TransformationPointerArray* COLLADAKinModelSerialChainIterator::getTransformationArray()
 {
-    LOG (DEBUG) << "transformMatrix " << current << " " << kinMatrix[current][current+1];
-    return transformMatrix[kinMatrix[current][current+1]][current];
+    LOG (INFO) << "transformMatrix " << current << " " << kinMatrix[current][current+1];
+    return transformMatrix[kinMatrix[current][current+1]-1][current];
 
 }
 
@@ -84,12 +100,14 @@ unsigned int COLLADAKinModelSerialChainIterator::getLinkNumber(const KinematicsM
 }
 
 template <class T>
-void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix)
+void COLLADAKinModelSerialChainIterator::initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix, T defaultValue)
 {
     matrix.resize(width);
     for (unsigned int i = 0; i < width; i++)
     {
         matrix[i].resize(height);
+        for (unsigned int y = 0; y < height; y++)
+            matrix[i][y] = defaultValue;
     }
 }
 
@@ -116,7 +134,7 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
                 unsigned int linkNumber = linkJointConnPtr->getLinkNumber();
                 kinPair.childLink = linkNumber;
                 isParentLink = true;
-                kinMatrix[kinPair.parentLink][kinPair.childLink] = jointIndex;
+                kinMatrix[kinPair.parentLink][kinPair.childLink] = jointIndex+1;
             }
         }
     }
@@ -177,8 +195,8 @@ void COLLADAKinModelSerialChainIterator::buildKinMatrix()
     unsigned int maxJointIndex = getMaxJointIndex(kinModelPtr->getLinkJointConnections());
     unsigned int linkNumber = getLinkNumber(kinModelPtr->getLinkJointConnections());
 
-    initMatrix(linkNumber, linkNumber, kinMatrix);
-    initMatrix(maxJointIndex+1, linkNumber, transformMatrix);
+    initMatrix(linkNumber+1, linkNumber+1, kinMatrix, 0);
+    initMatrix(maxJointIndex+1, linkNumber, transformMatrix, (COLLADAFW::TransformationPointerArray*) NULL);
 
     buildTransformation();
     for (unsigned int i = 0; i <= maxJointIndex; i++)

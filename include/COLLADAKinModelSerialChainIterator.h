@@ -33,7 +33,8 @@ private:
     unsigned int getLinkNumber(const COLLADAFW::KinematicsModel::LinkJointConnections& linkJointConnArray);
 
     template <class T>
-    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix);
+    //void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix);
+    void initMatrix(unsigned int width, unsigned int height, std::vector< std::vector<T> >& matrix, T defaultValue);
     void parseLinkJointConnections(unsigned int jointIndex);
     void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis);
 
@@ -41,7 +42,7 @@ private:
     void buildKinMatrix();
 
     void getKinematicsPair();
-    std::vector< std::vector<unsigned int> > kinMatrix;
+    std::vector< std::vector<int> > kinMatrix;
     std::vector< std::vector<COLLADAFW::TransformationPointerArray*> > transformMatrix;
     COLLADAFW::KinematicsModel* kinModelPtr;
     unsigned int current;
