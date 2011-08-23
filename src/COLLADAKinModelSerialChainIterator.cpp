@@ -50,28 +50,29 @@ unsigned int COLLADAKinModelSerialChainIterator::size() // return a number of el
     unsigned int matrixSize = 0;
     for (unsigned int i = 0; i < kinMatrix.size(); i++)
     {
-       // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] << " "  <<  endl;
-       // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] <<  endl;
+        // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] << " "  <<  endl;
+        // cout << kinMatrix[0][i] << " " << kinMatrix[1][i] << " " << kinMatrix[2][i] <<  endl;
 
         if (kinMatrix[i][i+1] == NULL)
             return matrixSize;
 
         matrixSize++;
     }
-    cout << endl;
-    cout << endl;
+
     return matrixSize;
 }
 
 Joint* COLLADAKinModelSerialChainIterator::getJoint()  // get current element
 {
+
     return kinModelPtr->getJoints()[kinMatrix[current][current+1]-1];
 }
 
 TransformationPointerArray* COLLADAKinModelSerialChainIterator::getTransformationArray()
 {
-    LOG (INFO) << "transformMatrix " << current << " " << kinMatrix[current][current+1];
-    return transformMatrix[kinMatrix[current][current+1]-1][current];
+
+
+    return transformMatrix[current][current+1]; //[kinMatrix[current][current+1]-1][current];
 
 }
 
@@ -117,9 +118,12 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
     const JointPointerArray& jointArray = kinModelPtr->getJoints();
     bool isParentLink = true;
     KinematicsPair kinPair;
+
+    KinematicsModel::LinkJointConnection* parentLinkJointConnPtr = NULL;
     for (unsigned int i = 0; i < linkJointConnArray.getCount(); i++)
     {
         KinematicsModel::LinkJointConnection* linkJointConnPtr = linkJointConnArray[i];
+
         unsigned int jIndex = linkJointConnPtr->getJointIndex();
         if (jIndex == jointIndex)
         {
@@ -127,6 +131,7 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
             {
                 unsigned int linkNumber = linkJointConnPtr->getLinkNumber();
                 kinPair.parentLink = linkNumber;
+                parentLinkJointConnPtr = linkJointConnPtr;
                 isParentLink = false;
             }
             else
@@ -135,12 +140,25 @@ void COLLADAKinModelSerialChainIterator::parseLinkJointConnections(unsigned int 
                 kinPair.childLink = linkNumber;
                 isParentLink = true;
                 kinMatrix[kinPair.parentLink][kinPair.childLink] = jointIndex+1;
+
+                // const KinematicsModel::LinkJointConnections& linkJointConnArray = kinModelPtr->getLinkJointConnections();
+
+                TransformationPointerArray& transformArray = parentLinkJointConnPtr->getTransformations();
+
+                if (transformArray.getCount() > 0)
+                {
+                    transformMatrix[kinPair.parentLink][kinPair.childLink] = &transformArray;
+
+                }
             }
+
+
+
         }
     }
 }
 
-
+/*
 void COLLADAKinModelSerialChainIterator::buildTransformation()
 {
     const KinematicsModel::LinkJointConnections& linkJointConnArray = kinModelPtr->getLinkJointConnections();
@@ -151,12 +169,15 @@ void COLLADAKinModelSerialChainIterator::buildTransformation()
         LinkIndex linkIndex = linkJointConnPtr->getLinkNumber();
         JointIndex jointIndex = linkJointConnPtr->getJointIndex();
         TransformationPointerArray& transformArray = linkJointConnPtr->getTransformations();
+
         if (transformArray.getCount() > 0)
         {
             transformMatrix[jointIndex][linkIndex] = &transformArray;
+
         }
     }
 }
+*/
 
 void COLLADAKinModelSerialChainIterator::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis)
 {
@@ -196,12 +217,13 @@ void COLLADAKinModelSerialChainIterator::buildKinMatrix()
     unsigned int linkNumber = getLinkNumber(kinModelPtr->getLinkJointConnections());
 
     initMatrix(linkNumber+1, linkNumber+1, kinMatrix, 0);
-    initMatrix(maxJointIndex+1, linkNumber, transformMatrix, (COLLADAFW::TransformationPointerArray*) NULL);
+    // initMatrix(maxJointIndex+1, linkNumber, transformMatrix, (COLLADAFW::TransformationPointerArray*) NULL);
+    initMatrix(linkNumber+1, linkNumber+1, transformMatrix, (COLLADAFW::TransformationPointerArray*) NULL);
 
-    buildTransformation();
+    //buildTransformation();
     for (unsigned int i = 0; i <= maxJointIndex; i++)
     {
-      //  vector<KinematicsPair> kinPairArray;
+        //  vector<KinematicsPair> kinPairArray;
         parseLinkJointConnections(i);
 
         /*    vector<unsigned int> links;

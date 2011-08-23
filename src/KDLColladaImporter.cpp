@@ -19,7 +19,7 @@ using namespace BRICS_MM;
 KDLColladaImporter::KDLColladaImporter(std::vector<KDL::Chain>& kdlChain) : kdlChain(kdlChain)
 {
     Logger::setMinLoglevel(Logger::LOGDEBUG);
-	Logger::setLogfile("road_runner.log");
+    Logger::setLogfile("road_runner.log");
 }
 
 KDLColladaImporter::~KDLColladaImporter()
@@ -183,27 +183,27 @@ void KDLColladaImporter::parseTransformationArray(TransformationPointerArray* tr
 
         switch (transform->getTransformationType())
         {
-            case COLLADAFW::Transformation::TRANSLATE:
-            {
-                Vector3 t = dynamic_cast<COLLADAFW::Translate*> (transform)->getTranslation();
-                KDL::Vector trans(t.x, t.y, t.z);
-                KDL::Frame translation(trans);
-                frame = frame * translation;
-                break;
-            }
+        case COLLADAFW::Transformation::TRANSLATE:
+        {
+            Vector3 t = dynamic_cast<COLLADAFW::Translate*> (transform)->getTranslation();
+            KDL::Vector trans(t.x, t.y, t.z);
+            KDL::Frame translation(trans);
+            frame = frame * translation;
+            break;
+        }
 
-            case COLLADAFW::Transformation::ROTATE:
-            {
-                Vector3 t = dynamic_cast<COLLADAFW::Rotate*> (transform)->getRotationAxis();
-                double angle = static_cast<COLLADAFW::Rotate*> (transform)->getRotationAngle();
-                KDL::Rotation rot(KDL::Rotation::Rot(KDL::Vector(t.x,
-                                                                 t.y,
-                                                                 t.z), angle  * COLLADABU::Math::PI / 180.0));
+        case COLLADAFW::Transformation::ROTATE:
+        {
+            Vector3 t = dynamic_cast<COLLADAFW::Rotate*> (transform)->getRotationAxis();
+            double angle = static_cast<COLLADAFW::Rotate*> (transform)->getRotationAngle();
+            KDL::Rotation rot(KDL::Rotation::Rot(KDL::Vector(t.x,
+                                                 t.y,
+                                                 t.z), angle  * COLLADABU::Math::PI / 180.0));
 
-                KDL::Frame rotation(rot);
-                frame = frame * rotation;
-                break;
-            }
+            KDL::Frame rotation(rot);
+            frame = frame * rotation;
+            break;
+        }
         }
     }
 }
@@ -211,7 +211,7 @@ void KDLColladaImporter::parseTransformationArray(TransformationPointerArray* tr
 void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsScenePtr, vector <KDL::Chain>& kdlChainArray)
 {
     const KinematicsModelArray& kinModelArray = kinematicsScenePtr->getKinematicsModels();
-    LOG(INFO) << "Found " << kinModelArray.getCount() << " kinematics models.";
+    LOG(DEBUG) << "Found " << kinModelArray.getCount() << " kinematics models.";
 
     for (size_t i = 0; i < kinModelArray.getCount(); i++)
     {
@@ -257,7 +257,7 @@ void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsS
             }
 
         }
-        while(itr.next() != NULL);
+        while(itr.next() != 0);
 
         kdlChainArray.push_back(kdlChain);
     }
@@ -290,7 +290,7 @@ void KDLColladaImporter::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KD
     const JointPrimitivePointerArray& jointPrimitiveArray = jointPtr->getJointPrimitives();
 
     if (jointPrimitiveArray.getCount() > 1)
-        LOG(INFO) << "found more than one joint primitive";
+        LOG(ERROR) << "found more than one joint primitive";
 
     for (size_t i = 0; i < jointPrimitiveArray.getCount(); i++)
     {
@@ -309,7 +309,7 @@ void KDLColladaImporter::parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KD
             jointType = KDL::Joint::RotAxis;
             break;
         default:
-            LOG(INFO) << "unknown joint type";
+            LOG(ERROR) << "unknown joint type";
         }
 
     }
@@ -334,10 +334,11 @@ void  KDLColladaImporter::parseNodeLinkBindArray(InstanceKinematicsScene* instKi
 
 bool KDLColladaImporter::writeKinematicsScene( const COLLADAFW::KinematicsScene* kinematicsScene )
 {
-    LOG(INFO) << "kinematics scene found, let's parse it!";
-    const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
+    LOG(DEBUG) << "kinematics scene found, let's parse it!";
 
 #ifdef DEBUG
+    const InstanceKinematicsSceneArray& instanceKinSceneArray = kinematicsScene->getInstanceKinematicsScenes();
+
     for (int i = 0; i < instanceKinSceneArray.getCount(); i++)
     {
         InstanceKinematicsScene* instanceKinScenePtr = instanceKinSceneArray[i];

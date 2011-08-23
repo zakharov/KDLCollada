@@ -38,7 +38,7 @@ private:
     void parseLinkJointConnections(unsigned int jointIndex);
     void parseJointPrimitiveArray(COLLADAFW::Joint* jointPtr, KDL::Joint::JointType& jointType, KDL::Vector& jointAxis);
 
-    void buildTransformation();
+    //void buildTransformation();
     void buildKinMatrix();
 
     void getKinematicsPair();
