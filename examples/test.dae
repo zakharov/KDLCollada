@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2008/03/COLLADASchema" version="1.5.0" xsi:schemaLocation="http://www.collada.org/2008/03/COLLADASchema http://www.khronos.org/files/collada_schema_1_5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asset>
+    <contributor>
+      <author>Alexey Zakharov</author>
+      <authoring_tool>KDL COLLADA exporter</authoring_tool>
+    </contributor>
+    <created>2011-09-04T20:13:10</created>
+    <modified>2011-09-04T20:13:10</modified>
+    <unit name="millimeter" meter="0.001"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_joints>
+    <joint id="revolute" name="joint1"/>
+  </library_joints>
+</COLLADA>

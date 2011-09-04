@@ -1,3 +1,14 @@
+/*
+    Copyright (c) 2011 Alexey Zakharov
+    email alexey.zakharov at gmail.com
+
+	This file is part of KDLColladaParser.
+
+    Licensed under the MIT Open Source License,
+    for details please see LICENSE file or the website
+    http://www.opensource.org/licenses/mit-license.php
+*/
+
 #include "KDLColladaImporter.h"
 #include "COLLADAKinModelSerialChainIterator.h"
 #include "COLLADAFW.h"
@@ -13,13 +24,11 @@
 using namespace std;
 using namespace COLLADAFW;
 using namespace COLLADABU::Math;
-using namespace BRICS_MM;
-
 
 KDLColladaImporter::KDLColladaImporter(std::vector<KDL::Chain>& kdlChain) : kdlChain(kdlChain)
 {
     Logger::setMinLoglevel(Logger::LOGDEBUG);
-    Logger::setLogfile("road_runner.log");
+    Logger::setLogfile("importer.log");
 }
 
 KDLColladaImporter::~KDLColladaImporter()
@@ -155,7 +164,7 @@ l5  0 0  0  j5 0  0
 
 Transformation matrix
 
-   j0 j1 l2 j3 j4 j5
+   l0 l1 l2 l3 l4 l5
 l0 0  0  0  0  0  0
 l1 t1 0  0  0  0  0
 l2  0 t2 0  0  0  0

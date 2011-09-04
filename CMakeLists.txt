@@ -48,6 +48,7 @@ SET(OPENCOLLADA_LIBRARIES
 	GeneratedSaxParser	
 	OpenCOLLADAFramework	
 	OpenCOLLADABaseUtils
+	OpenCOLLADAStreamWriter
 	MathMLSolver
         ${PCRE_LIBRARIES}
 	${LIBXML2_LIBRARIES}

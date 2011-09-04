@@ -13,7 +13,7 @@ int main()
 {
     KDLCollada kdlCollada;
     vector <KDL::Chain> kinematicsModels;
-    const string filename =  "kr150.dae";  // loading collada kinematics model and converting it to kdl serial chain
+    const string filename =  "puma.dae";  // loading collada kinematics model and converting it to kdl serial chain
     if (!kdlCollada.load(COLLADA_MODELS_PATH + filename, kinematicsModels))
     {
         cout << "Failed to import " << filename;

@@ -1,9 +1,13 @@
 /*
- * File:   KDLCollada.cpp
- * Author: alexey
- *
- * Created on July 20, 2011, 8:19 AM
- */
+    Copyright (c) 2011 Alexey Zakharov
+    email alexey.zakharov at gmail.com
+
+	This file is part of KDLColladaParser.
+
+    Licensed under the MIT Open Source License,
+    for details please see LICENSE file or the website
+    http://www.opensource.org/licenses/mit-license.php
+*/
 
 #include "KDLCollada.h"
 #include "KDLColladaExporter.h"
@@ -31,8 +35,9 @@ KDLCollada::~KDLCollada()
 bool KDLCollada::load(const string& filename, std::vector<Chain>& kdlChain)
 {
     KDLColladaImporter importer(kdlChain);
- 	COLLADASaxFWL::Loader loader;
-	COLLADAFW::Root root(&loader, &importer);
+    COLLADASaxFWL::Loader loader;
+
+    COLLADAFW::Root root(&loader, &importer);
 
 
     return root.loadDocument(filename);
@@ -40,6 +45,9 @@ bool KDLCollada::load(const string& filename, std::vector<Chain>& kdlChain)
 
 bool KDLCollada::save(const string& filename, std::vector<Chain>& kdlChain)
 {
-    KDLColladaExporter exporter;
+    KDLColladaExporter exporter(filename, kdlChain);
+    exporter.exportScene();
+
+
     return false;
 }

@@ -1,3 +1,14 @@
+/*
+    Copyright (c) 2011 Alexey Zakharov
+    email alexey.zakharov at gmail.com
+
+	This file is part of KDLColladaParser.
+
+    Licensed under the MIT Open Source License,
+    for details please see LICENSE file or the website
+    http://www.opensource.org/licenses/mit-license.php
+*/
+
 #include "COLLADAKinModelSerialChainIterator.h"
 #include "COLLADABU.h"
 #include "Logger.h"
@@ -6,7 +17,6 @@
 using namespace COLLADAFW;
 using namespace COLLADABU::Math;
 using namespace std;
-using namespace BRICS_MM;
 
 COLLADAKinModelSerialChainIterator::~COLLADAKinModelSerialChainIterator()
 {

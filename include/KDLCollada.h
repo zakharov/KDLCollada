@@ -1,9 +1,13 @@
 /*
- * File:   KDLCollada.h
- * Author: alexey
- *
- * Created on July 20, 2011, 8:19 AM
- */
+    Copyright (c) 2011 Alexey Zakharov
+    email alexey.zakharov at gmail.com
+
+    This file is part of KDLColladaParser.
+    
+    Licensed under the MIT Open Source License,
+    for details please see LICENSE file or the website
+    http://www.opensource.org/licenses/mit-license.php
+*/
 
 #ifndef KDLCOLLADA_H
 #define	KDLCOLLADA_H
