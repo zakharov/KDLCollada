@@ -12,6 +12,7 @@
 #include "COLLADASWStreamWriter.h"
 #include "COLLADASWJoint.h"
 #include "COLLADASWConstantsKinematicsExtension.h"
+#include "Logger.h"
 
 namespace COLLADASW
 {
@@ -19,15 +20,35 @@ namespace COLLADASW
 // ---------------------------------------------------
 Joint::Joint (
     StreamWriter* streamWriter,
-    // JointPrimitive* jointPrimitive,
+    const COLLADAFW::JointPrimitive& jointPrimitive,
     const String& jointId,
-    const String& jointName )
+    const String& jointName)
     : ElementWriter ( streamWriter )
     , BaseExtraTechnique ( )
-    //, mJointPrimitive ( jointPrimitive )
+    , mJointPrimitive ( jointPrimitive )
     , mJointId ( jointId )
     , mJointName ( jointName )
 {}
+
+// ---------------------------------------------------
+Joint::Joint (const Joint& orig)
+    : ElementWriter ( orig.mSW )
+    , BaseExtraTechnique ( )
+    , mJointPrimitive ( orig.getJointPrimitive() )
+    , mJointId ( orig.getJointId() )
+    , mJointName ( orig.getJointName() )
+{
+    LOG(DEBUG) << "id: " << mJointId;
+    LOG(DEBUG) << "name: " << mJointName;
+}
+
+// ---------------------------------------------------
+
+Joint& Joint::operator= (const Joint &rhs)
+{
+    Joint joint(rhs.mSW, rhs.getJointPrimitive(), rhs.getJointId(), rhs.getJointName());
+    return joint;
+}
 
 // ---------------------------------------------------
 void Joint::add () const
@@ -41,12 +62,63 @@ void Joint::add () const
     if ( !getJointName().empty() )
         mSW->appendAttribute ( CSWC::CSW_ATTRIBUTE_NAME, getJointName() );
 
+    bool isJointPrimitiveTagOpen = true;
+    switch (mJointPrimitive.getType())
+    {
+        case COLLADAFW::JointPrimitive::REVOLUTE :
+            mSW->openElement(CSWCKinematics::CSW_ELEMENT_REVOLUTE);
+            break;
+        case COLLADAFW::JointPrimitive::PRISMATIC :
+            mSW->openElement(CSWCKinematics::CSW_ELEMENT_PRISMATIC);
+            break;
+        default :
+            LOG(ERROR) << "Joint primitive is missing";
+            isJointPrimitiveTagOpen = false;
+    }
+
+    if (isJointPrimitiveTagOpen)
+    {
+        mSW->appendAttribute (CSWC::CSW_ATTRIBUTE_SID, "axis"); // TODO:: chainge that
+
+        mSW->openElement (CSWCKinematics::CSW_ELEMENT_AXIS);
+        mSW->appendValues (mJointPrimitive.getAxis()[0], mJointPrimitive.getAxis()[1], mJointPrimitive.getAxis()[2]);
+        mSW->closeElement();
+
+        if (!isnan(mJointPrimitive.getHardLimitMin()) && !isnan(mJointPrimitive.getHardLimitMax()))
+        {
+            mSW->openElement (CSWCKinematics::CSW_ELEMENT_LIMITS);
+
+            mSW->openElement (CSWCKinematics::CSW_ELEMENT_MIN);
+            mSW->appendValues (mJointPrimitive.getHardLimitMin());
+            mSW->closeElement();
+
+            mSW->openElement (CSWCKinematics::CSW_ELEMENT_MAX);
+            mSW->appendValues (mJointPrimitive.getHardLimitMax());
+            mSW->closeElement();
+
+            mSW->closeElement();
+        }
+        else
+            LOG(WARNING) << "Joint primitive has no NaN limit values, skipping limits.";
+
+
+
+        mSW->closeElement();
+    }
+
+
+ /*   if (jointType != CSWCKinematics::CSW_ERR_UNKNOWN_INPUT)
+    {
+        mSW->openElement(jointType);
+        msW->closeElement();
+    }
+*/
     // Write the optics element
     // mOptics->add ();
 
     // addExtraTechniques ( mSW );
 
-    mSW->closeElement(); // COLLADASW_ELEMENT_CAMERA
+    mSW->closeElement(); // COLLADASW_ELEMENT_JOINT
 
 }
 

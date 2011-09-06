@@ -3,7 +3,7 @@
     email alexey.zakharov at gmail.com
 
     This file is part of KDLColladaParser.
-    
+
     Licensed under the MIT Open Source License,
     for details please see LICENSE file or the website
     http://www.opensource.org/licenses/mit-license.php
@@ -21,9 +21,19 @@ class CSWCKinematics : public CSWC
 {
 public:
     static const String CSW_ELEMENT_LIBRARY_JOINTS;
-    static const String CSW_ELEMENT_LIBRARY_KINEMATICS;
+    static const String CSW_ELEMENT_LIBRARY_KINEMATICS_MODELS;
 
     static const String CSW_ELEMENT_JOINT;
+    static const String CSW_ELEMENT_REVOLUTE;
+    static const String CSW_ELEMENT_PRISMATIC;
+    static const String CSW_ELEMENT_AXIS;
+
+    static const String CSW_ELEMENT_LIMITS;
+    static const String CSW_ELEMENT_MIN;
+    static const String CSW_ELEMENT_MAX;
+
+    static const String CSW_ELEMENT_KINEMATICS_MODEL;
+    static const String CSW_ELEMENT_INSTANCE_JOINT;
 };
 
 /*

@@ -9,7 +9,8 @@
     http://www.opensource.org/licenses/mit-license.php
 */
 
-#include "KDLColladaLibraryJointsExporter.hpp"
+#include "KDLColladaLibraryJointsExporter.h"
+#include "KDLColladaLibraryKinematicsModelsExporter.h"
 
 #include "KDLColladaExporter.h"
 #include "COLLADASWStreamWriter.h"
@@ -23,7 +24,12 @@ using namespace COLLADABU;
 using namespace KDL;
 using namespace std;
 
-KDLColladaExporter::KDLColladaExporter(const std::string& filename, std::vector<Chain>& kdlChain) : mStreamWriter ( NativeString (filename), false, COLLADASW::StreamWriter::COLLADA_1_5_0 )
+KDLColladaExporter::KDLColladaExporter(const std::string& filename,
+                                       std::vector<Chain>& kdlChains) :
+                                                                        mStreamWriter ( NativeString (filename),
+                                                                        false,
+                                                                        COLLADASW::StreamWriter::COLLADA_1_5_0 ),
+                                                                        kdlChains(kdlChains)
 {
     Logger::setMinLoglevel(Logger::LOGDEBUG);
     Logger::setLogfile("exporter.log");
@@ -103,22 +109,34 @@ bool KDLColladaExporter::exportAsset()
     return true;
 }
 
-bool KDLColladaExporter::exportJoints()
+bool KDLColladaExporter::exportJoints(vector<COLLADASW::Joint>& joints)
 {
     KDLColladaLibraryJointsExporter jointExporter( &mStreamWriter );
-    jointExporter.doExport();
+    bool status = jointExporter.doExport(kdlChains);
+  //  joints = jointExporter.getJoints();
+    return status;
+}
 
-    return true;
+bool KDLColladaExporter::exportKinematicsModels(vector<COLLADASW::Joint>& joints)
+{
+    KDLColladaLibraryKinematicsModelsExporter kinematicsModelsExporter( &mStreamWriter );
+    return kinematicsModelsExporter.doExport( kdlChains);
 }
 
 bool KDLColladaExporter::exportScene ()
 {
+    bool status = true;
+
     LOG(DEBUG) << "Exporting to" << this->mStreamWriter.getCOLLADAVersion();
     mStreamWriter.startDocument();
-    exportAsset();
-    exportJoints();
+    status = exportAsset();
+
+    vector<COLLADASW::Joint> joints;
+    status = exportJoints(joints);
+
+    status = exportKinematicsModels(joints);
     mStreamWriter.endDocument();
 
-    return true;
+    return status;
 }
 

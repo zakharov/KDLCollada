@@ -13,8 +13,17 @@
 
 namespace COLLADASW
 {
-const String CSWCKinematics::CSW_ELEMENT_LIBRARY_KINEMATICS = "library_kinematics";
-const String CSWCKinematics::CSW_ELEMENT_LIBRARY_JOINTS = "library_joints";
+const String CSWCKinematics::CSW_ELEMENT_LIBRARY_KINEMATICS_MODELS = "library_kinematics_models";
+const String CSWCKinematics::CSW_ELEMENT_KINEMATICS_MODEL = "kinematics_model";
 
+const String CSWCKinematics::CSW_ELEMENT_LIBRARY_JOINTS = "library_joints";
 const String CSWCKinematics::CSW_ELEMENT_JOINT = "joint";
+const String CSWCKinematics::CSW_ELEMENT_REVOLUTE = "revolute";
+const String CSWCKinematics::CSW_ELEMENT_PRISMATIC = "prismatic";
+const String CSWCKinematics::CSW_ELEMENT_AXIS = "axis";
+const String CSWCKinematics::CSW_ELEMENT_LIMITS = "limits";
+const String CSWCKinematics::CSW_ELEMENT_MIN = "min";
+const String CSWCKinematics::CSW_ELEMENT_MAX = "max";
+
+const String CSWCKinematics::CSW_ELEMENT_INSTANCE_JOINT = "instance_joint";
 }

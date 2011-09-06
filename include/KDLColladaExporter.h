@@ -3,7 +3,7 @@
     email alexey.zakharov at gmail.com
 
     This file is part of KDLColladaParser.
-    
+
     Licensed under the MIT Open Source License,
     for details please see LICENSE file or the website
     http://www.opensource.org/licenses/mit-license.php
@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include "COLLADASWStreamWriter.h"
+#include "COLLADASWJoint.h"
 
 namespace COLLADABU {
     class NativeString;
@@ -26,13 +27,14 @@ namespace KDL {
 
 class KDLColladaExporter {
 public:
-    KDLColladaExporter(const std::string& filename, std::vector<KDL::Chain>& kdlChain);
+    KDLColladaExporter(const std::string& filename, std::vector<KDL::Chain>& kdlChains);
     bool exportAsset();
     KDLColladaExporter(const KDLColladaExporter& orig);
     virtual ~KDLColladaExporter();
     bool exportScene();
-    bool exportJoints();
+    bool exportJoints(std::vector<COLLADASW::Joint>& joints);
     bool exportLibraryJoints();
+    bool exportKinematicsModels(std::vector<COLLADASW::Joint>& joints);
 
      enum SystemUnitType
     {
@@ -51,6 +53,7 @@ private:
 
     /** The stream writer used to write the COLLADASW file.*/
     COLLADASW::StreamWriter mStreamWriter;
+    std::vector<KDL::Chain>& kdlChains;
 
 
 };

@@ -1,0 +1,53 @@
+/*
+    Copyright (c) 2011 Alexey Zakharov
+    email alexey.zakharov at gmail.com
+
+	This file is part of KDLColladaParser.
+
+    Licensed under the MIT Open Source License,
+    for details please see LICENSE file or the website
+    http://www.opensource.org/licenses/mit-license.php
+*/
+
+#include "COLLADASWStreamWriter.h"
+#include "COLLADASWKinematicsModel.h"
+#include "COLLADASWInstanceJoint.h"
+#include "COLLADASWLibraryKinematicsModels.h"
+#include "COLLADASWConstantsKinematicsExtension.h"
+
+namespace COLLADASW
+{
+
+//---------------------------------------------------------------
+LibraryKinematicsModels::LibraryKinematicsModels ( COLLADASW::StreamWriter* streamWriter )
+    : Library ( streamWriter, CSWCKinematics::CSW_ELEMENT_LIBRARY_KINEMATICS_MODELS )
+    , BaseExtraTechnique()
+{}
+
+
+//---------------------------------------------------------------
+void LibraryKinematicsModels::addKinematicsModel ( const KinematicsModel& kinematicsModel )
+{
+    startKinematicsModel ( kinematicsModel );
+    endKinematicsModel ( kinematicsModel );
+}
+
+void LibraryKinematicsModels::startKinematicsModel ( const KinematicsModel& kinematicsModel )
+{
+    openLibrary();
+    kinematicsModel.start();
+}
+
+void LibraryKinematicsModels::endKinematicsModel ( const KinematicsModel& kinematicsModel )
+{
+    kinematicsModel.end();
+}
+
+void LibraryKinematicsModels::addInstanceJoint ( const InstanceJoint& instanceJoint )
+{
+    instanceJoint.add();
+}
+
+
+
+} //namespace COLLADASW

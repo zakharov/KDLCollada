@@ -9,8 +9,8 @@
     http://www.opensource.org/licenses/mit-license.php
 */
 
-#ifndef __COLLADASTREAMWRITER_JOINT_H__
-#define __COLLADASTREAMWRITER_JOINT_H__
+#ifndef __COLLADASTREAMWRITER_INSTANCE_JOINT_H__
+#define __COLLADASTREAMWRITER_INSTANCE_JOINT_H__
 
 #include "COLLADASWPrerequisites.h"
 #include "COLLADASWStreamWriter.h"
@@ -23,21 +23,21 @@ namespace COLLADASW
 {
 
     /** A class that hold all information about an @a \<joint\> element.*/
-    class Joint : public ElementWriter, public BaseExtraTechnique
+    class InstanceJoint : public ElementWriter, public BaseExtraTechnique
     {
 
     private:
 
         // LibraryJoints should be able to call the add() method.
-        friend class LibraryJoints;
+        friend class LibraryKinematicsModels;
 
 //        BaseOptic* mOptics;
 
-        COLLADAFW::JointPrimitive mJointPrimitive;
+      //  COLLADAFW::JointPrimitive mJointPrimitive;
 
-        String mJointId;
+        String mInstanceJointSid;
 
-        String mJointName;
+        String mInstanceJointUrl;
 
 
 
@@ -53,31 +53,29 @@ namespace COLLADASW
         * @param cameraId The id of the camera.
         * @param cameraName The name of the camera.
         */
-        Joint (
+        InstanceJoint (
             StreamWriter* streamWriter,
-            const COLLADAFW::JointPrimitive& jointPrimitive,
-            const String& jointId = ElementWriter::EMPTY_STRING,
-            const String& jointName = ElementWriter::EMPTY_STRING);
+            //const COLLADAFW::JointPrimitive& jointPrimitive,
+            const String& instanceJointUrl = ElementWriter::EMPTY_STRING,
+            const String& instanceJointSid = ElementWriter::EMPTY_STRING);
 
         /** Copy constructor **/
-        Joint (const Joint& orig);
+        InstanceJoint (const InstanceJoint& orig);
 
         /** Destructor */
-        virtual ~Joint()
+        virtual ~InstanceJoint()
         { }
 
-        Joint& operator=(const Joint &rhs);
+        const String& getInstanceJointSid() const { return mInstanceJointSid; }
 
-        const String& getJointId() const { return mJointId; }
+        const String& getInstanceJointUrl() const { return mInstanceJointUrl; }
 
-        const String& getJointName() const { return mJointName; }
-
-        void setJointPrimitive(const COLLADAFW::JointPrimitive& jointPrimitive) { mJointPrimitive = jointPrimitive; };
-        const COLLADAFW::JointPrimitive& getJointPrimitive() const { return mJointPrimitive; };
+        //void setJointPrimitive(const COLLADAFW::JointPrimitive& jointPrimitive) { mJointPrimitive = jointPrimitive; };
+        //const COLLADAFW::JointPrimitive& getJointPrimitive() const { return mJointPrimitive; };
 //        const BaseOptic* getOptics() const { return mOptics; }
 
     };
 
 } //namespace COLLADASW
 
-#endif //__COLLADASTREAMWRITER_JOINT_H__
+#endif //__COLLADASTREAMWRITER_INSTANCE_JOINT_H__

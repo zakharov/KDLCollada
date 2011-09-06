@@ -5,12 +5,53 @@
       <author>Alexey Zakharov</author>
       <authoring_tool>KDL COLLADA exporter</authoring_tool>
     </contributor>
-    <created>2011-09-04T20:13:10</created>
-    <modified>2011-09-04T20:13:10</modified>
+    <created>2011-09-06T11:06:41</created>
+    <modified>2011-09-06T11:06:41</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
   <library_joints>
-    <joint id="revolute" name="joint1"/>
+    <joint id="joint0" name="joint0">
+      <revolute sid="axis">
+        <axis>0 0 0</axis>
+      </revolute>
+    </joint>
+    <joint id="joint1" name="joint1">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
+    <joint id="joint2" name="joint2">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
+    <joint id="joint3" name="joint3">
+      <revolute sid="axis">
+        <axis>0 0 0</axis>
+      </revolute>
+    </joint>
+    <joint id="joint4" name="joint4">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
+    <joint id="joint5" name="joint5">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
   </library_joints>
+  <library_kinematics_models>
+    <kinematics_model id="chain1">
+      <technique_common>
+        <instance_joint url="joint0" sid="joint0"/>
+        <instance_joint url="joint1" sid="joint1"/>
+        <instance_joint url="joint2" sid="joint2"/>
+        <instance_joint url="joint3" sid="joint3"/>
+        <instance_joint url="joint4" sid="joint4"/>
+        <instance_joint url="joint5" sid="joint5"/>
+      </technique_common>
+    </kinematics_model>
+  </library_kinematics_models>
 </COLLADA>
