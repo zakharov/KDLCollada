@@ -21,6 +21,8 @@ namespace COLLADASW
 
     class KinematicsModel;
     class InstanceJoint;
+    class Link;
+    class AttachmentFull;
     /** Class to simply the creation of @a \<library_kinematics_models\>*/
     class LibraryKinematicsModels : public Library, public BaseExtraTechnique
     {
@@ -42,6 +44,13 @@ namespace COLLADASW
         void endKinematicsModel ( const KinematicsModel& kinematicsModel );
         void addKinematicsModel ( const KinematicsModel& KinematicsModel );
         void addInstanceJoint ( const InstanceJoint& instanceJoint );
+
+        void startLink( const Link& link);
+        void endLink( const Link& link);
+        void addLink( const Link& link);
+        void startAttachmentFull( const AttachmentFull& attachmentFull);
+        void endAttachmentFull( const AttachmentFull& attachmentFull);
+        void addAttachmentFull( const AttachmentFull& attachmentFull);
     };
 
 } //namespace COLLADASW

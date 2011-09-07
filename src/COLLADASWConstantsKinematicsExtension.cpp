@@ -26,4 +26,7 @@ const String CSWCKinematics::CSW_ELEMENT_MIN = "min";
 const String CSWCKinematics::CSW_ELEMENT_MAX = "max";
 
 const String CSWCKinematics::CSW_ELEMENT_INSTANCE_JOINT = "instance_joint";
+const String CSWCKinematics::CSW_ELEMENT_LINK = "link";
+const String CSWCKinematics::CSW_ELEMENT_ATTACHMENT_FULL = "attachement_full";
+const String CSWCKinematics::CSW_ATTRIBUTE_JOINT = "joint";
 }

@@ -80,7 +80,7 @@ bool KDLColladaLibraryJointsExporter::doExport(vector <Chain>& kdlChains)
     return true;
 }
 
-COLLADASW::Joint& KDLColladaLibraryJointsExporter::makeColladaSWJoint(COLLADASW::StreamWriter* streamWriter, Joint& kdlJoint, string uniqueId)
+COLLADASW::Joint KDLColladaLibraryJointsExporter::makeColladaSWJoint(COLLADASW::StreamWriter* streamWriter, Joint& kdlJoint, string uniqueId)
 {
 
 

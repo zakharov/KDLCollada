@@ -28,7 +28,8 @@ Joint::Joint (
     , mJointPrimitive ( jointPrimitive )
     , mJointId ( jointId )
     , mJointName ( jointName )
-{}
+{
+}
 
 // ---------------------------------------------------
 Joint::Joint (const Joint& orig)
@@ -38,16 +39,7 @@ Joint::Joint (const Joint& orig)
     , mJointId ( orig.getJointId() )
     , mJointName ( orig.getJointName() )
 {
-    LOG(DEBUG) << "id: " << mJointId;
-    LOG(DEBUG) << "name: " << mJointName;
-}
 
-// ---------------------------------------------------
-
-Joint& Joint::operator= (const Joint &rhs)
-{
-    Joint joint(rhs.mSW, rhs.getJointPrimitive(), rhs.getJointId(), rhs.getJointName());
-    return joint;
 }
 
 // ---------------------------------------------------

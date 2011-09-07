@@ -32,7 +32,7 @@ public:
     virtual ~KDLColladaLibraryJointsExporter();
 
     bool doExport(std::vector <KDL::Chain>& kdlChain);
-    COLLADASW::Joint& makeColladaSWJoint(COLLADASW::StreamWriter * streamWriter, KDL::Joint& kdlJoint, std::string uniqueId);
+    COLLADASW::Joint makeColladaSWJoint(COLLADASW::StreamWriter * streamWriter, KDL::Joint& kdlJoint, std::string uniqueId);
     const std::vector<COLLADASW::Joint>& getJoints();
 
 private:

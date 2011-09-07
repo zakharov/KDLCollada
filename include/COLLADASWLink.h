@@ -9,8 +9,8 @@
     http://www.opensource.org/licenses/mit-license.php
 */
 
-#ifndef __COLLADASTREAMWRITER_JOINT_H__
-#define __COLLADASTREAMWRITER_JOINT_H__
+#ifndef __COLLADASTREAMWRITER_LINK_H__
+#define __COLLADASTREAMWRITER_LINK_H__
 
 #include "COLLADASWPrerequisites.h"
 #include "COLLADASWStreamWriter.h"
@@ -23,28 +23,24 @@ namespace COLLADASW
 {
 
     /** A class that hold all information about an @a \<joint\> element.*/
-    class Joint : public ElementWriter, public BaseExtraTechnique
+    class Link : public ElementWriter, public BaseExtraTechnique
     {
 
     private:
 
         // LibraryJoints should be able to call the add() method.
-        friend class LibraryJoints;
+        friend class LibraryKinematicsModels;
 
-//        BaseOptic* mOptics;
+        String mLinkSid;
 
-        COLLADAFW::JointPrimitive mJointPrimitive;
-
-        String mJointId;
-
-        String mJointName;
-
-
+        String mLinkName;
 
     protected:
 
         /** Adds the joint information. */
         void add() const;
+        void start() const;
+        void end() const;
 
     public:
 
@@ -53,24 +49,20 @@ namespace COLLADASW
         * @param cameraId The id of the camera.
         * @param cameraName The name of the camera.
         */
-        Joint (
+        Link (
             StreamWriter* streamWriter,
-            const COLLADAFW::JointPrimitive& jointPrimitive,
-            const String& jointId = ElementWriter::EMPTY_STRING,
-            const String& jointName = ElementWriter::EMPTY_STRING);
+            const String& linkSid = ElementWriter::EMPTY_STRING,
+            const String& linkName = ElementWriter::EMPTY_STRING);
 
         /** Copy constructor **/
-        Joint (const Joint& orig);
+        Link (const Link& orig);
 
         /** Destructor */
-        virtual ~Joint()
+        virtual ~Link()
         { }
 
-        const String& getJointId() const { return mJointId; }
-        const String& getJointName() const { return mJointName; }
-        void setJointPrimitive(const COLLADAFW::JointPrimitive& jointPrimitive) { mJointPrimitive = jointPrimitive; };
-        const COLLADAFW::JointPrimitive& getJointPrimitive() const { return mJointPrimitive; };
-//        const BaseOptic* getOptics() const { return mOptics; }
+        const String& getLinkSid() const { return mLinkSid; }
+        const String& getLinkName() const { return mLinkName; }
 
     };
 

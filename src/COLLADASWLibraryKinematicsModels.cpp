@@ -12,6 +12,8 @@
 #include "COLLADASWStreamWriter.h"
 #include "COLLADASWKinematicsModel.h"
 #include "COLLADASWInstanceJoint.h"
+#include "COLLADASWLink.h"
+#include "COLLADASWAttachmentFull.h"
 #include "COLLADASWLibraryKinematicsModels.h"
 #include "COLLADASWConstantsKinematicsExtension.h"
 
@@ -46,6 +48,38 @@ void LibraryKinematicsModels::endKinematicsModel ( const KinematicsModel& kinema
 void LibraryKinematicsModels::addInstanceJoint ( const InstanceJoint& instanceJoint )
 {
     instanceJoint.add();
+}
+
+void LibraryKinematicsModels::startLink( const Link& link)
+{
+    link.start();
+}
+
+void LibraryKinematicsModels::endLink( const Link& link)
+{
+    link.end();
+}
+
+void LibraryKinematicsModels::addLink( const Link& link)
+{
+    startLink(link);
+    endLink(link);
+}
+
+void LibraryKinematicsModels::startAttachmentFull( const AttachmentFull& attachmentFull)
+{
+    attachmentFull.start();
+}
+
+void LibraryKinematicsModels::endAttachmentFull( const AttachmentFull& attachmentFull)
+{
+    attachmentFull.end();
+}
+
+void LibraryKinematicsModels::addAttachmentFull( const AttachmentFull& attachmentFull)
+{
+    startAttachmentFull(attachmentFull);
+    endAttachmentFull(attachmentFull);
 }
 
 

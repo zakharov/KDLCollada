@@ -39,8 +39,9 @@ public:
 
     bool doExport(std::vector <KDL::Chain>& kdlChain);
 
-    const COLLADASW::KinematicsModel& makeColladaSWKinematicsModel(COLLADASW::StreamWriter * streamWriter, KDL::Chain& kdlChain, std::string id);
-    const COLLADASW::InstanceJoint& makeColladaSWInstanceJoint(COLLADASW::StreamWriter* streamWriter, KDL::Joint& kdlJoint, std::string url, std::string sid);
+    COLLADASW::KinematicsModel makeColladaSWKinematicsModel(COLLADASW::StreamWriter * streamWriter, KDL::Chain& kdlChain, std::string id);
+    COLLADASW::InstanceJoint makeColladaSWInstanceJoint(COLLADASW::StreamWriter* streamWriter, KDL::Joint& kdlJoint, std::string url, std::string sid);
+    unsigned int makeColladaSWSerialKinematicsChain(COLLADASW::StreamWriter* streamWriter, KDL::Chain& kdlChain, unsigned int jointCounter);
 
 private:
 

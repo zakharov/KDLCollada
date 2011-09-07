@@ -10,7 +10,7 @@
 */
 
 #include "COLLADASWStreamWriter.h"
-#include "COLLADASWInstanceJoint.h"
+#include "COLLADASWAttachmentFull.h"
 #include "COLLADASWConstantsKinematicsExtension.h"
 #include "Logger.h"
 
@@ -18,37 +18,40 @@ namespace COLLADASW
 {
 
 // ---------------------------------------------------
-InstanceJoint::InstanceJoint (
+AttachmentFull::AttachmentFull (
     StreamWriter* streamWriter,
-   // const COLLADAFW::JointPrimitive& jointPrimitive,
-    const String& instanceJointUrl,
-    const String& instanceJointSid)
+    const String& joint)
     : ElementWriter ( streamWriter )
     , BaseExtraTechnique ( )
-  //  , mJointPrimitive ( jointPrimitive )
-    , mInstanceJointUrl ( instanceJointUrl )
-    , mInstanceJointSid ( instanceJointSid )
+    , mJoint ( joint )
 {
 
 }
 
 // ---------------------------------------------------
-InstanceJoint::InstanceJoint (const InstanceJoint& orig)
+AttachmentFull::AttachmentFull (const AttachmentFull& orig)
     : ElementWriter ( orig.mSW )
     , BaseExtraTechnique ( )
-    , mInstanceJointUrl ( orig.getInstanceJointUrl() )
-    , mInstanceJointSid ( orig.getInstanceJointSid() )
+    , mJoint ( orig.getJoint() )
 {
 
 }
 
 // ---------------------------------------------------
-
-void InstanceJoint::add () const
+void AttachmentFull::add () const
 {
-    mSW->openElement ( CSWCKinematics::CSW_ELEMENT_INSTANCE_JOINT );
-    mSW->appendAttribute ( CSWC::CSW_ATTRIBUTE_URL, getInstanceJointUrl() );
-    mSW->appendAttribute ( CSWC::CSW_ATTRIBUTE_SID, getInstanceJointSid() );
+    start();
+    end();
+}
+
+void AttachmentFull::start() const
+{
+    mSW->openElement ( CSWCKinematics::CSW_ELEMENT_ATTACHMENT_FULL );
+    mSW->appendAttribute ( CSWCKinematics::CSW_ATTRIBUTE_JOINT, mJoint );
+}
+
+void AttachmentFull::end() const
+{
     mSW->closeElement();
 }
 

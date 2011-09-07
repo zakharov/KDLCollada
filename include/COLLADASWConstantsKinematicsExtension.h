@@ -34,6 +34,10 @@ public:
 
     static const String CSW_ELEMENT_KINEMATICS_MODEL;
     static const String CSW_ELEMENT_INSTANCE_JOINT;
+    static const String CSW_ELEMENT_LINK;
+    static const String CSW_ELEMENT_ATTACHMENT_FULL;
+    static const String CSW_ATTRIBUTE_JOINT;
+
 };
 
 /*

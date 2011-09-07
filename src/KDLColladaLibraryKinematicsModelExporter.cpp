@@ -13,6 +13,8 @@
 #include "KDLColladaLibraryKinematicsModelsExporter.h"
 #include "COLLADASWLibraryKinematicsModels.h"
 #include "COLLADASWKinematicsModel.h"
+#include "COLLADASWLink.h"
+#include "COLLADASWAttachmentFull.h"
 #include <kdl/chain.hpp>
 #include <kdl/segment.hpp>
 #include <string>
@@ -60,7 +62,7 @@ bool KDLColladaLibraryKinematicsModelsExporter::doExport(vector <Chain>& kdlChai
     return true;
 }
 
-const COLLADASW::KinematicsModel& KDLColladaLibraryKinematicsModelsExporter::makeColladaSWKinematicsModel(COLLADASW::StreamWriter* streamWriter,
+COLLADASW::KinematicsModel KDLColladaLibraryKinematicsModelsExporter::makeColladaSWKinematicsModel(COLLADASW::StreamWriter* streamWriter,
                                                                                                           Chain& kdlChain, string id)
 {
     COLLADASW::KinematicsModel kinematicsModel(streamWriter, id);
@@ -79,11 +81,13 @@ const COLLADASW::KinematicsModel& KDLColladaLibraryKinematicsModelsExporter::mak
         addInstanceJoint(colladaInstanceJoint);
     }
 
+    makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, 0);
+
     endKinematicsModel(kinematicsModel);
     return kinematicsModel;
 }
 
-const COLLADASW::InstanceJoint& KDLColladaLibraryKinematicsModelsExporter::makeColladaSWInstanceJoint(COLLADASW::StreamWriter* streamWriter, Joint& kdlJoint, string url, string sid)
+COLLADASW::InstanceJoint KDLColladaLibraryKinematicsModelsExporter::makeColladaSWInstanceJoint(COLLADASW::StreamWriter* streamWriter, Joint& kdlJoint, string url, string sid)
 {
 
     string jointName = kdlJoint.getName();
@@ -94,4 +98,26 @@ const COLLADASW::InstanceJoint& KDLColladaLibraryKinematicsModelsExporter::makeC
     COLLADASW::InstanceJoint colladaInstanceJoint(streamWriter, jointName, sid);
 
     return colladaInstanceJoint;
+}
+
+unsigned int KDLColladaLibraryKinematicsModelsExporter::makeColladaSWSerialKinematicsChain(COLLADASW::StreamWriter* streamWriter, Chain& kdlChain, unsigned int jointCounter)
+{
+    unsigned int jointNumber = kdlChain.getNrOfSegments();
+    if (jointCounter < jointNumber)
+    {
+        COLLADASW::Link colladaLink(streamWriter, toString(jointCounter), toString(jointCounter));
+        COLLADASW::AttachmentFull attachmentFull(streamWriter, toString(jointCounter));
+        startLink(colladaLink);
+        startAttachmentFull(attachmentFull);
+        ++jointCounter;
+        makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, jointCounter);
+        endAttachmentFull(attachmentFull);
+        endLink(colladaLink);
+    } else
+    {
+        COLLADASW::Link colladaLink(streamWriter, toString(jointCounter), toString(jointCounter));
+        addLink(colladaLink);
+    }
+
+    return jointCounter;
 }

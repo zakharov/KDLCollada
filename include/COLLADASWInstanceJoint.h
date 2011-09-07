@@ -35,10 +35,8 @@ namespace COLLADASW
 
       //  COLLADAFW::JointPrimitive mJointPrimitive;
 
-        String mInstanceJointSid;
-
         String mInstanceJointUrl;
-
+        String mInstanceJointSid;
 
 
     protected:
