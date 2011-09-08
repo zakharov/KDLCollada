@@ -61,7 +61,7 @@ bool KDLColladaLibraryJointsExporter::doExport(vector <Chain>& kdlChains)
     Chain kdlChain = kdlChains[0];
     openLibrary();
 
-    unsigned int jointNr = kdlChain.getNrOfJoints();
+    unsigned int jointNr = kdlChain.getNrOfSegments();
 
     for (unsigned int i = 0; i < jointNr; i++)
     {

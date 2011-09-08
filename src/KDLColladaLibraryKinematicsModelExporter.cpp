@@ -14,6 +14,8 @@
 #include "COLLADASWLibraryKinematicsModels.h"
 #include "COLLADASWKinematicsModel.h"
 #include "COLLADASWLink.h"
+#include "COLLADASWTranslate.h"
+#include "COLLADASWRotate.h"
 #include "COLLADASWAttachmentFull.h"
 #include <kdl/chain.hpp>
 #include <kdl/segment.hpp>
@@ -25,6 +27,8 @@ using namespace std;
 using namespace KDL;
 
 const string defaultJointIdPrefix = "joint";
+const string defaultLinkIdPrefix = "link";
+const string kdlDefaultSegmentName = "NoName";
 const string kdlDefaultJointName = "NoName";
 
 string toString(int number);
@@ -67,7 +71,7 @@ COLLADASW::KinematicsModel KDLColladaLibraryKinematicsModelsExporter::makeCollad
 {
     COLLADASW::KinematicsModel kinematicsModel(streamWriter, id);
     startKinematicsModel(kinematicsModel);
-    unsigned int jointNr = kdlChain.getNrOfJoints();
+    unsigned int jointNr = kdlChain.getNrOfSegments();
 
 
     for (unsigned int i = 0; i < jointNr; i++)
@@ -81,7 +85,7 @@ COLLADASW::KinematicsModel KDLColladaLibraryKinematicsModelsExporter::makeCollad
         addInstanceJoint(colladaInstanceJoint);
     }
 
-    makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, 0);
+    makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, id);
 
     endKinematicsModel(kinematicsModel);
     return kinematicsModel;
@@ -100,24 +104,72 @@ COLLADASW::InstanceJoint KDLColladaLibraryKinematicsModelsExporter::makeColladaS
     return colladaInstanceJoint;
 }
 
-unsigned int KDLColladaLibraryKinematicsModelsExporter::makeColladaSWSerialKinematicsChain(COLLADASW::StreamWriter* streamWriter, Chain& kdlChain, unsigned int jointCounter)
+unsigned int KDLColladaLibraryKinematicsModelsExporter::makeColladaSWSerialKinematicsChain(COLLADASW::StreamWriter* streamWriter, Chain& kdlChain, string kinModelName, unsigned int jointCounter)
 {
+
     unsigned int jointNumber = kdlChain.getNrOfSegments();
     if (jointCounter < jointNumber)
     {
-        COLLADASW::Link colladaLink(streamWriter, toString(jointCounter), toString(jointCounter));
-        COLLADASW::AttachmentFull attachmentFull(streamWriter, toString(jointCounter));
+        Segment segment = kdlChain.getSegment(jointCounter);
+        Frame frame = segment.pose(0);
+        Vector origin = frame.p;
+        Rotation orientation = frame.M;
+
+        double x,y,z,w;
+
+        orientation.GetEulerZYX(z,y,x);
+
+
+        string linkName = segment.getName();
+        if (linkName == kdlDefaultSegmentName)
+            linkName = defaultLinkIdPrefix;
+        linkName = linkName + toString(jointCounter);
+
+        COLLADASW::Link colladaLink(streamWriter, linkName, linkName);
+
+        string jointName = segment.getJoint().getName();
+        if (jointName == kdlDefaultJointName)
+            jointName = defaultJointIdPrefix;
+        jointName = kinModelName + "/" + jointName + toString(jointCounter);
+
+        COLLADASW::AttachmentFull attachmentFull(streamWriter, jointName);
         startLink(colladaLink);
         startAttachmentFull(attachmentFull);
+
+        if ( (origin.x() + origin.y() + origin.z()) != 0) {
+            COLLADASW::Translate translate(streamWriter, origin.x(), origin.y(), origin.z());
+            addTranslate(translate);
+        }
+
+        if (z != 0)
+        {
+            COLLADASW::Rotate rotateZ(streamWriter, 0, 0, 1, z * 180 / M_PI);
+            addRotate(rotateZ);
+        }
+
+        if (y != 0)
+        {
+            COLLADASW::Rotate rotateY(streamWriter, 0, 1, 0, y * 180 / M_PI);
+            addRotate(rotateY);
+        }
+
+        if (x != 0)
+        {
+            COLLADASW::Rotate rotateX(streamWriter, 1, 0, 0, x * 180 / M_PI);
+            addRotate(rotateX);
+        }
+
+
         ++jointCounter;
-        makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, jointCounter);
+        makeColladaSWSerialKinematicsChain(streamWriter, kdlChain, kinModelName, jointCounter);
         endAttachmentFull(attachmentFull);
         endLink(colladaLink);
-    } else
+    }/* else
     {
+
         COLLADASW::Link colladaLink(streamWriter, toString(jointCounter), toString(jointCounter));
         addLink(colladaLink);
-    }
+    }*/
 
     return jointCounter;
 }

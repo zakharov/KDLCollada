@@ -13,6 +13,8 @@
 #include "COLLADASWKinematicsModel.h"
 #include "COLLADASWInstanceJoint.h"
 #include "COLLADASWLink.h"
+#include "COLLADASWRotate.h"
+#include "COLLADASWTranslate.h"
 #include "COLLADASWAttachmentFull.h"
 #include "COLLADASWLibraryKinematicsModels.h"
 #include "COLLADASWConstantsKinematicsExtension.h"
@@ -80,6 +82,16 @@ void LibraryKinematicsModels::addAttachmentFull( const AttachmentFull& attachmen
 {
     startAttachmentFull(attachmentFull);
     endAttachmentFull(attachmentFull);
+}
+
+void LibraryKinematicsModels::addTranslate( const Translate& translate )
+{
+    translate.add();
+}
+
+void LibraryKinematicsModels::addRotate( const Rotate& rotate )
+{
+    rotate.add();
 }
 
 

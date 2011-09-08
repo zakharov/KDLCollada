@@ -5,8 +5,8 @@
       <author>Alexey Zakharov</author>
       <authoring_tool>KDL COLLADA exporter</authoring_tool>
     </contributor>
-    <created>2011-09-07T09:59:59</created>
-    <modified>2011-09-07T09:59:59</modified>
+    <created>2011-09-08T12:26:02</created>
+    <modified>2011-09-08T12:26:02</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -41,6 +41,31 @@
         <axis>0 0 1</axis>
       </revolute>
     </joint>
+    <joint id="joint6" name="joint6">
+      <revolute sid="axis">
+        <axis>0 0 0</axis>
+      </revolute>
+    </joint>
+    <joint id="joint7" name="joint7">
+      <revolute sid="axis">
+        <axis>0 0 0</axis>
+      </revolute>
+    </joint>
+    <joint id="joint8" name="joint8">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
+    <joint id="joint9" name="joint9">
+      <revolute sid="axis">
+        <axis>0 0 1</axis>
+      </revolute>
+    </joint>
+    <joint id="joint10" name="joint10">
+      <revolute sid="axis">
+        <axis>0 0 0</axis>
+      </revolute>
+    </joint>
   </library_joints>
   <library_kinematics_models>
     <kinematics_model id="chain1">
@@ -51,30 +76,40 @@
         <instance_joint url="joint3" sid="joint3"/>
         <instance_joint url="joint4" sid="joint4"/>
         <instance_joint url="joint5" sid="joint5"/>
-        <link sid="0" name="0">
-          <attachement_full joint="0">
-            <link sid="1" name="1">
-              <attachement_full joint="1">
-                <link sid="2" name="2">
-                  <attachement_full joint="2">
-                    <link sid="3" name="3">
-                      <attachement_full joint="3">
-                        <link sid="4" name="4">
-                          <attachement_full joint="4">
-                            <link sid="5" name="5">
-                              <attachement_full joint="5">
-                                <link sid="6" name="6">
-                                  <attachement_full joint="6">
-                                    <link sid="7" name="7">
-                                      <attachement_full joint="7">
-                                        <link sid="8" name="8">
-                                          <attachement_full joint="8">
-                                            <link sid="9" name="9">
-                                              <attachement_full joint="9">
-                                                <link sid="10" name="10">
-                                                  <attachement_full joint="10">
-                                                    <link sid="11" name="11"/>
-                                                  </attachement_full>
+        <instance_joint url="joint6" sid="joint6"/>
+        <instance_joint url="joint7" sid="joint7"/>
+        <instance_joint url="joint8" sid="joint8"/>
+        <instance_joint url="joint9" sid="joint9"/>
+        <instance_joint url="joint10" sid="joint10"/>
+        <link sid="link0" name="link0">
+          <attachement_full joint="chain1/joint0">
+            <link sid="link1" name="link1">
+              <attachement_full joint="chain1/joint1">
+                <rotate>1 0 0 90</rotate>
+                <link sid="link2" name="link2">
+                  <attachement_full joint="chain1/joint2">
+                    <translate>0.4318 0 0</translate>
+                    <link sid="link3" name="link3">
+                      <attachement_full joint="chain1/joint3">
+                        <link sid="link4" name="link4">
+                          <attachement_full joint="chain1/joint4">
+                            <translate>0.0203 0 0.15005</translate>
+                            <rotate>1 0 0 -90</rotate>
+                            <link sid="link5" name="link5">
+                              <attachement_full joint="chain1/joint5">
+                                <translate>0 0 0.4318</translate>
+                                <rotate>1 0 0 90</rotate>
+                                <link sid="link6" name="link6">
+                                  <attachement_full joint="chain1/joint6">
+                                    <link sid="link7" name="link7">
+                                      <attachement_full joint="chain1/joint7">
+                                        <link sid="link8" name="link8">
+                                          <attachement_full joint="chain1/joint8">
+                                            <rotate>1 0 0 -90</rotate>
+                                            <link sid="link9" name="link9">
+                                              <attachement_full joint="chain1/joint9">
+                                                <link sid="link10" name="link10">
+                                                  <attachement_full joint="chain1/joint10"/>
                                                 </link>
                                               </attachement_full>
                                             </link>
