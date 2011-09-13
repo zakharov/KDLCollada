@@ -22,6 +22,7 @@ class CSWCKinematics : public CSWC
 public:
     static const String CSW_ELEMENT_LIBRARY_JOINTS;
     static const String CSW_ELEMENT_LIBRARY_KINEMATICS_MODELS;
+    static const String CSW_ELEMENT_LIBRARY_KINEMATICS_SCENENS;
 
     static const String CSW_ELEMENT_JOINT;
     static const String CSW_ELEMENT_REVOLUTE;
@@ -35,8 +36,14 @@ public:
     static const String CSW_ELEMENT_KINEMATICS_MODEL;
     static const String CSW_ELEMENT_INSTANCE_JOINT;
     static const String CSW_ELEMENT_LINK;
+    static const String CSW_ELEMENT_KINEMATICS_SCENE;
     static const String CSW_ELEMENT_ATTACHMENT_FULL;
     static const String CSW_ATTRIBUTE_JOINT;
+    static const String CSW_ELEMENT_INSTANCE_KINEMATICS_MODEL;
+    static const String CSW_ELEMENT_SIDREF;
+    static const String CSW_ELEMENT_INSTANCE_KINEMATICS_SCENE;
+    static const String CSW_ELEMENT_BIND_KINEMATICS_MODEL;
+    static const String CSW_ATTRIBUTE_NODE;
 
 };
 

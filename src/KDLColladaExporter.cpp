@@ -11,6 +11,8 @@
 
 #include "KDLColladaLibraryJointsExporter.h"
 #include "KDLColladaLibraryKinematicsModelsExporter.h"
+#include "KDLColladaLibraryKinematicsScenesExporter.h"
+#include "KDLColladaSceneExporter.h"
 
 #include "KDLColladaExporter.h"
 #include "COLLADASWStreamWriter.h"
@@ -123,7 +125,19 @@ bool KDLColladaExporter::exportKinematicsModels(vector<COLLADASW::Joint>& joints
     return kinematicsModelsExporter.doExport( kdlChains);
 }
 
-bool KDLColladaExporter::exportScene ()
+bool KDLColladaExporter::exportKinematicsScenes()
+{
+    KDLColladaLibraryKinematicsScenesExporter kinematicsScenesExporter( &mStreamWriter );
+    return kinematicsScenesExporter.doExport(kdlChains);
+}
+
+bool KDLColladaExporter::exportScene()
+{
+    KDLColladaSceneExporter sceneExporter( &mStreamWriter );
+    return sceneExporter.doExport(kdlChains);
+}
+
+bool KDLColladaExporter::exportChain ()
 {
     bool status = true;
 
@@ -135,6 +149,10 @@ bool KDLColladaExporter::exportScene ()
     status = exportJoints(joints);
 
     status = exportKinematicsModels(joints);
+
+    status = exportKinematicsScenes();
+
+    status = exportScene();
     mStreamWriter.endDocument();
 
     return status;

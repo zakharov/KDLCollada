@@ -5,8 +5,8 @@
       <author>Alexey Zakharov</author>
       <authoring_tool>KDL COLLADA exporter</authoring_tool>
     </contributor>
-    <created>2011-09-08T12:26:02</created>
-    <modified>2011-09-08T12:26:02</modified>
+    <created>2011-09-13T11:27:50</created>
+    <modified>2011-09-13T11:27:50</modified>
     <unit name="millimeter" meter="0.001"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -68,70 +68,148 @@
     </joint>
   </library_joints>
   <library_kinematics_models>
-    <kinematics_model id="chain1">
+    <kinematics_model id="chain.01">
       <technique_common>
-        <instance_joint url="joint0" sid="joint0"/>
-        <instance_joint url="joint1" sid="joint1"/>
-        <instance_joint url="joint2" sid="joint2"/>
-        <instance_joint url="joint3" sid="joint3"/>
-        <instance_joint url="joint4" sid="joint4"/>
-        <instance_joint url="joint5" sid="joint5"/>
-        <instance_joint url="joint6" sid="joint6"/>
-        <instance_joint url="joint7" sid="joint7"/>
-        <instance_joint url="joint8" sid="joint8"/>
-        <instance_joint url="joint9" sid="joint9"/>
-        <instance_joint url="joint10" sid="joint10"/>
+        <instance_joint url="#joint0" sid="joint0"/>
+        <instance_joint url="#joint1" sid="joint1"/>
+        <instance_joint url="#joint2" sid="joint2"/>
+        <instance_joint url="#joint3" sid="joint3"/>
+        <instance_joint url="#joint4" sid="joint4"/>
+        <instance_joint url="#joint5" sid="joint5"/>
+        <instance_joint url="#joint6" sid="joint6"/>
+        <instance_joint url="#joint7" sid="joint7"/>
+        <instance_joint url="#joint8" sid="joint8"/>
+        <instance_joint url="#joint9" sid="joint9"/>
+        <instance_joint url="#joint10" sid="joint10"/>
         <link sid="link0" name="link0">
-          <attachement_full joint="chain1/joint0">
+          <attachment_full joint="chain.01/joint0">
             <link sid="link1" name="link1">
-              <attachement_full joint="chain1/joint1">
+              <attachment_full joint="chain.01/joint1">
                 <rotate>1 0 0 90</rotate>
                 <link sid="link2" name="link2">
-                  <attachement_full joint="chain1/joint2">
+                  <attachment_full joint="chain.01/joint2">
                     <translate>0.4318 0 0</translate>
                     <link sid="link3" name="link3">
-                      <attachement_full joint="chain1/joint3">
+                      <attachment_full joint="chain.01/joint3">
                         <link sid="link4" name="link4">
-                          <attachement_full joint="chain1/joint4">
+                          <attachment_full joint="chain.01/joint4">
                             <translate>0.0203 0 0.15005</translate>
                             <rotate>1 0 0 -90</rotate>
                             <link sid="link5" name="link5">
-                              <attachement_full joint="chain1/joint5">
+                              <attachment_full joint="chain.01/joint5">
                                 <translate>0 0 0.4318</translate>
                                 <rotate>1 0 0 90</rotate>
                                 <link sid="link6" name="link6">
-                                  <attachement_full joint="chain1/joint6">
+                                  <attachment_full joint="chain.01/joint6">
                                     <link sid="link7" name="link7">
-                                      <attachement_full joint="chain1/joint7">
+                                      <attachment_full joint="chain.01/joint7">
                                         <link sid="link8" name="link8">
-                                          <attachement_full joint="chain1/joint8">
+                                          <attachment_full joint="chain.01/joint8">
                                             <rotate>1 0 0 -90</rotate>
                                             <link sid="link9" name="link9">
-                                              <attachement_full joint="chain1/joint9">
+                                              <attachment_full joint="chain.01/joint9">
                                                 <link sid="link10" name="link10">
-                                                  <attachement_full joint="chain1/joint10"/>
+                                                  <attachment_full joint="chain.01/joint10"/>
                                                 </link>
-                                              </attachement_full>
+                                              </attachment_full>
                                             </link>
-                                          </attachement_full>
+                                          </attachment_full>
                                         </link>
-                                      </attachement_full>
+                                      </attachment_full>
                                     </link>
-                                  </attachement_full>
+                                  </attachment_full>
                                 </link>
-                              </attachement_full>
+                              </attachment_full>
                             </link>
-                          </attachement_full>
+                          </attachment_full>
                         </link>
-                      </attachement_full>
+                      </attachment_full>
                     </link>
-                  </attachement_full>
+                  </attachment_full>
                 </link>
-              </attachement_full>
+              </attachment_full>
             </link>
-          </attachement_full>
+          </attachment_full>
         </link>
       </technique_common>
     </kinematics_model>
   </library_kinematics_models>
+  <library_kinematics_scenes>
+    <kinematics_scene id="kinematics_scene.01">
+      <instance_kinematics_model url="#chain.01" sid="chain.01">
+        <newparam sid="param.model">
+          <SIDREF>kinematics_scene.01/chain.01</SIDREF>
+        </newparam>
+        <newparam sid="param.joint0.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint0/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint0.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint1.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint1/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint1.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint2.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint2/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint2.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint3.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint3/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint3.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint4.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint4/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint4.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint5.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint5/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint5.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint6.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint6/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint6.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint7.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint7/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint7.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint8.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint8/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint8.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint9.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint9/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint9.value">
+          <float>0</float>
+        </newparam>
+        <newparam sid="param.joint10.axis">
+          <SIDREF>kinematics_scene.01/chain.01/joint10/axis</SIDREF>
+        </newparam>
+        <newparam sid="param.joint10.value">
+          <float>0</float>
+        </newparam>
+      </instance_kinematics_model>
+    </kinematics_scene>
+  </library_kinematics_scenes>
+  <scene>
+    <instance_kinematics_scene url="#kinematics_scene.01"/>
+  </scene>
 </COLLADA>

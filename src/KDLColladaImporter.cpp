@@ -27,7 +27,7 @@ using namespace COLLADABU::Math;
 
 KDLColladaImporter::KDLColladaImporter(std::vector<KDL::Chain>& kdlChain) : kdlChain(kdlChain)
 {
-    Logger::setMinLoglevel(Logger::LOGDEBUG);
+    Logger::setMinLoglevel(Logger::INFO);
     Logger::setLogfile("importer.log");
 }
 
@@ -246,8 +246,11 @@ void KDLColladaImporter::parseKinematicsModel(const KinematicsScene* kinematicsS
 
                 string jointName = joint->getName();
                 parseJointPrimitiveArray(joint, jointType, jointAxis);
-
-                KDL::Joint jointKDL(jointName, KDL::Vector(), jointAxis, jointType);
+                KDL::Joint jointKDL;
+                if (jointAxis.x() == 0 && jointAxis.y() == 0 && jointAxis.z() == 0)
+                    jointKDL = KDL::Joint(jointName);
+                else
+                    jointKDL = KDL::Joint(jointName, KDL::Vector(), jointAxis, jointType);
 
                 char buffer[50] = {0};
                 sprintf (buffer, "%d\0",segmentNumber);

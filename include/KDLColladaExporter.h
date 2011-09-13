@@ -31,10 +31,12 @@ public:
     bool exportAsset();
     KDLColladaExporter(const KDLColladaExporter& orig);
     virtual ~KDLColladaExporter();
+    bool exportChain();
     bool exportScene();
     bool exportJoints(std::vector<COLLADASW::Joint>& joints);
     bool exportLibraryJoints();
     bool exportKinematicsModels(std::vector<COLLADASW::Joint>& joints);
+    bool exportKinematicsScenes();
 
      enum SystemUnitType
     {

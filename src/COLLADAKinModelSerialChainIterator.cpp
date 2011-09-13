@@ -35,7 +35,7 @@ bool COLLADAKinModelSerialChainIterator::next() // move cursor and get next elem
     if (size() == 0)
         return false;
 
-    if (current < size()-1)
+    if (current < size()-2) //TODO FIND BUG HERE!!!!
     {
         current++;
         return true;
@@ -74,7 +74,7 @@ unsigned int COLLADAKinModelSerialChainIterator::size() // return a number of el
 
 Joint* COLLADAKinModelSerialChainIterator::getJoint()  // get current element
 {
-
+    LOG(DEBUG) << "current:" << current;
     return kinModelPtr->getJoints()[kinMatrix[current][current+1]-1];
 }
 

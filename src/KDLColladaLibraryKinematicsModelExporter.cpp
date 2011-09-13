@@ -59,7 +59,7 @@ bool KDLColladaLibraryKinematicsModelsExporter::doExport(vector <Chain>& kdlChai
     Chain kdlChain = kdlChains[0];
     openLibrary();
 
-    COLLADASW::KinematicsModel colladaKinematicsModel = makeColladaSWKinematicsModel(COLLADASW::LibraryKinematicsModels::mSW, kdlChain, "chain1");
+    COLLADASW::KinematicsModel colladaKinematicsModel = makeColladaSWKinematicsModel(COLLADASW::LibraryKinematicsModels::mSW, kdlChain, "chain.01");
 
 
     closeLibrary();
@@ -98,6 +98,7 @@ COLLADASW::InstanceJoint KDLColladaLibraryKinematicsModelsExporter::makeColladaS
 
     if (jointName == kdlDefaultJointName)
         jointName = url;
+    jointName = "#" + jointName;
 
     COLLADASW::InstanceJoint colladaInstanceJoint(streamWriter, jointName, sid);
 

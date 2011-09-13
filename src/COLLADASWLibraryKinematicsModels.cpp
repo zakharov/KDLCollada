@@ -94,6 +94,4 @@ void LibraryKinematicsModels::addRotate( const Rotate& rotate )
     rotate.add();
 }
 
-
-
 } //namespace COLLADASW

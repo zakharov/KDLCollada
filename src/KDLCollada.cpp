@@ -49,5 +49,5 @@ bool KDLCollada::save(const string& filename, std::vector<Chain>& kdlChain)
 
 
 
-    return exporter.exportScene();
+    return exporter.exportChain();
 }
